@@ -1,0 +1,13 @@
+Listening Exercises
+
+Sets
+- Name: string
+- CardIds: string[]
+
+Card
+- id: string
+- Title: string
+- Body: string
+- Body Translation: string
+- Audio Snippet: Audio
+- Highlights: string[]

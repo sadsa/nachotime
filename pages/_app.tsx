@@ -1,15 +1,11 @@
 import { AppProps } from "next/app";
+import Layout from "../components/Layout";
 
 function NachoApp({ Component, pageProps }: AppProps) {
   return (
-    <div>
+    <Layout>
       <Component {...pageProps} />
-      <style jsx global>{`
-        html {
-          font-family: "Roboto";
-        }
-      `}</style>
-    </div>
+    </Layout>
   );
 }
 

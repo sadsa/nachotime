@@ -1,10 +1,25 @@
 import { NextPage } from "next";
-import { Button } from "semantic-ui-react";
+import { Image, Header } from "semantic-ui-react";
 
-const Home: NextPage<{ userAgent: string }> = ({ userAgent }) => (
+const Home: NextPage<{}> = () => (
   <div>
-    <Button>Click here</Button>
-    <h1>Hello world! - user agent: {userAgent}</h1>
+    <Header as="h1">Semantic UI React Fixed Template</Header>
+    <p>This is a basic fixed menu template using fixed size containers.</p>
+    <p>
+      A text container is used for the main container, which is useful for
+      single column layouts.
+    </p>
+
+    <Image
+      src="/images/wireframe/media-paragraph.png"
+      style={{ marginTop: "2em" }}
+    />
+    <Image src="/images/wireframe/paragraph.png" style={{ marginTop: "2em" }} />
+    <Image src="/images/wireframe/paragraph.png" style={{ marginTop: "2em" }} />
+    <Image src="/images/wireframe/paragraph.png" style={{ marginTop: "2em" }} />
+    <Image src="/images/wireframe/paragraph.png" style={{ marginTop: "2em" }} />
+    <Image src="/images/wireframe/paragraph.png" style={{ marginTop: "2em" }} />
+    <Image src="/images/wireframe/paragraph.png" style={{ marginTop: "2em" }} />
   </div>
 );
 
