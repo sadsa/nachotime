@@ -2,7 +2,6 @@ import React from "react";
 import {
     Container,
     Divider,
-    Dropdown,
     Grid,
     Header,
     Image,
@@ -16,7 +15,7 @@ const Layout: React.FC<any> = (props) => (
     <div>
         <Menu fixed="top" inverted>
             <Container>
-                <Menu.Item as="a" header>
+                <Menu.Item as="a" href="/" header>
                     <Image
                         size="mini"
                         src="/images/logo.png"
@@ -42,7 +41,7 @@ const Layout: React.FC<any> = (props) => (
             </Container>
         </Menu>
 
-        <Container text style={{ marginTop: "7em" }}>
+        <Container style={{ marginTop: "7em" }}>
             {props.children}
         </Container>
 

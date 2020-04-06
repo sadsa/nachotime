@@ -1,25 +1,27 @@
 import React from "react";
 import { Card, Image, Icon } from "semantic-ui-react";
+import { ICard } from "../interfaces/card";
+import { formatShortDate } from "../util/dateUtils";
 
-function SummaryCard() {
+const SummaryCard: React.FC<ICard> = (props) => {
     return (
         <Card>
             <Image src="/images/avatar/daniel.jpg" wrapped ui={false} />
             <Card.Content>
-                <Card.Header>Daniel</Card.Header>
-                <Card.Meta>Joined in 2016</Card.Meta>
-                <Card.Description>
-                    Daniel is a comedian living in Nashville.
-                </Card.Description>
+                <Card.Header>{props.name}</Card.Header>
+                <Card.Meta>
+                    {formatShortDate(props.createdDate)}
+                </Card.Meta>
+                <Card.Description>{props.summary}</Card.Description>
             </Card.Content>
             <Card.Content extra>
                 <a>
                     <Icon name="user" />
-                    10 Friends
+                    {formatShortDate(props.lastReviewDate)}
                 </a>
             </Card.Content>
         </Card>
     );
-}
+};
 
 export default SummaryCard;
