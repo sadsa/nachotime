@@ -1,7 +1,9 @@
-import "@firebase/firestore";
-import firebase from "@firebase/app";
+import firebase from "firebase/app";
+import "firebase/auth"; // If you need it
+import "firebase/firestore"; // If you need it
+import "firebase/storage"; // If you need it
 
-const config = {
+const clientCredentials = {
     apiKey: "AIzaSyAqTmCSxMpa8ChtctBr6OrRNbudOG6RX-U",
     authDomain: "nachotime-c52ff.firebaseapp.com",
     databaseURL: "https://nachotime-c52ff.firebaseio.com",
@@ -11,14 +13,8 @@ const config = {
     appId: "1:455353389293:web:7222206f47ef4a33617ce4",
 };
 
-let app;
-
 if (!firebase.apps.length) {
-    app = firebase.initializeApp(config);
-} else {
-    app = firebase.app();
+    firebase.initializeApp(clientCredentials);
 }
 
-const db = firebase.firestore(app);
-
-export default db;
+export default firebase;
