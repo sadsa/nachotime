@@ -1,36 +1,82 @@
 import React from "react";
-import { ReactMic, ReactMicStopEvent } from "react-mic";
+import { ReactMic, ReactMicProps, ReactMicStopEvent } from "react-mic";
 import { Button } from "semantic-ui-react";
+import AudioPlayer from "react-h5-audio-player";
 
-const AudioRecordField = () => {
-    const [record, setRecord] = React.useState(false);
-    const startRecording = () => setRecord(true);
+interface IAudioRecordProps extends ReactMicProps {
+    onChange(blobUrl: string): void;
+}
 
-    const stopRecording = () => setRecord(false);
+function useAudioRecordField() {
+    const [state, setState] = React.useState({
+        record: false,
+        playbackUrl: "",
+    });
 
-    const onData = (recordedBlob: Blob) => {
-        console.log("chunk of real-time data is: ", recordedBlob);
+    const startRecording = React.useCallback(
+        () => setState((state) => ({ ...state, record: true })),
+        []
+    );
+
+    const stopRecording = React.useCallback(
+        () =>
+            setState((state) => ({
+                ...state,
+                record: false,
+            })),
+        []
+    );
+
+    const saveRecording = React.useCallback((playbackUrl: string) => {
+        setState((state) => ({
+            ...state,
+            record: false,
+            playbackUrl,
+        }));
+    }, []);
+
+    return { state, startRecording, stopRecording, saveRecording };
+}
+
+const AudioRecordField: React.FC<IAudioRecordProps> = (props) => {
+    const {
+        state: { record, playbackUrl },
+        startRecording,
+        stopRecording,
+        saveRecording,
+    } = useAudioRecordField();
+
+    const handleStop = (event: ReactMicStopEvent) => {
+        const playbackUrl = URL.createObjectURL(event.blob);
+        saveRecording(playbackUrl);
+        props.onChange(playbackUrl);
     };
 
-    const onStop = (event: ReactMicStopEvent) => {
-        console.log("recordedBlob is: ", event.blob);
-    };
     return (
         <div>
             <ReactMic
                 record={record}
                 className="sound-wave"
-                onStop={onStop}
-                onData={onData}
                 strokeColor="#000000"
                 backgroundColor="#FF4081"
+                onStop={handleStop}
             />
-            <Button onClick={startRecording} type="button">
-                Start
-            </Button>
-            <Button onClick={stopRecording} type="button">
-                Stop
-            </Button>
+            {!record ? (
+                <Button onClick={startRecording} type="button">
+                    Start
+                </Button>
+            ) : (
+                <Button onClick={stopRecording} type="button">
+                    Stop
+                </Button>
+            )}
+            {playbackUrl ? (
+                <AudioPlayer
+                    src={playbackUrl}
+                    autoPlay={false}
+                    autoPlayAfterSrcChange={false}
+                />
+            ) : undefined}
         </div>
     );
 };
