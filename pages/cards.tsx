@@ -3,8 +3,8 @@ import { NextPage } from "next";
 import { Header, Grid, Button, Icon } from "semantic-ui-react";
 import SummaryCard from "../components/SummaryCard";
 import { ICard } from "../interfaces/card";
-import firebase from "../firebase/clientApp";
 import Link from "next/link";
+import { firebaseClient } from "../util/firebaseClient";
 
 type CardsProps = {
     cards: ICard[];
@@ -47,9 +47,7 @@ const Cards: NextPage<CardsProps> = ({ cards }) => {
 };
 
 Cards.getInitialProps = async function () {
-    const database = firebase.firestore();
-    const snapshot = await database.collection("cards").get();
-    const cards = snapshot.docs.map((doc) => doc.data() as ICard);
+    const cards = await firebaseClient.getCards();
     return { cards };
 };
 
