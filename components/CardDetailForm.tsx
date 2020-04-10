@@ -1,15 +1,16 @@
 import React from "react";
-import { Button, Checkbox, Form, Grid, TextArea } from "semantic-ui-react";
-import { useForm, Controller } from "react-hook-form";
+import { Button, Form, Grid } from "semantic-ui-react";
+import { useForm } from "react-hook-form";
 import { ICard } from "../interfaces/card";
 import dynamic from "next/dynamic";
 import * as yup from "yup";
+import { firebaseClient } from "../util/firebaseClient";
+import { useRouter } from "next/router";
+import AudioPlayer from "react-h5-audio-player";
 
 const AudioRecordField = dynamic(() => import("./AudioRecordField"), {
     ssr: false,
 });
-
-export type ICardDetailsFormData = ICard;
 
 const CardFormSchema = yup.object().shape({
     name: yup.string().required(),
@@ -20,24 +21,48 @@ const CardFormSchema = yup.object().shape({
     bannerImageUrl: yup.string().required(),
 });
 
-function CardDetailForm() {
-    const { register, handleSubmit, setValue, errors, control } = useForm<
-        ICardDetailsFormData
+async function createOrUpdateCard(audioBlob: Blob, data: ICard): Promise<void> {
+    if (!data.createdDate) {
+        const playbackAudioUrl = await firebaseClient.uploadAudio(audioBlob);
+        firebaseClient.createCard({
+            ...data,
+            playbackAudioUrl,
+            createdDate: Date.now(),
+        });
+    }
+    firebaseClient.updateCard(data);
+}
+
+const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
+    const { register, handleSubmit, setValue, errors } = useForm<
+        ICard
     >({
         validationSchema: CardFormSchema,
+        defaultValues: { ...card },
+    });
+    const router = useRouter();
+    const [audioBlob, setAudioBlob] = React.useState<Blob>();
+
+    const onSubmit = handleSubmit(async (data: ICard) => {
+        if (!audioBlob) return undefined;
+        try {
+            await createOrUpdateCard(audioBlob, data);
+            router.push("/cards");
+        } catch (error) {
+            throw Error("There was a problem saving this card");
+        }
     });
 
-    const onSubmit = handleSubmit((data) => {
-        console.log(errors);
-        console.log(data);
-    });
-
-    const onStopRecording = (playbackAudioUrl: string) => {
-        setValue("playbackAudioUrl", playbackAudioUrl);
+    const handleStopRecording = (audioBlob: Blob) => {
+        setValue("playbackAudioUrl", URL.createObjectURL(audioBlob));
+        setAudioBlob(audioBlob);
     };
 
     React.useEffect(() => {
-        register({ name: "playbackAudioUrl", defaultValue: "" });
+        register({
+            name: "playbackAudioUrl",
+            defaultValue: card?.playbackAudioUrl || "",
+        });
     }, [register]);
 
     return (
@@ -64,7 +89,7 @@ function CardDetailForm() {
                             </Form.Field>
                             <Form.Field error={!!errors.body}>
                                 <label>Body</label>
-                                <TextArea
+                                <textarea
                                     name="body"
                                     placeholder="Body"
                                     ref={register}
@@ -80,7 +105,21 @@ function CardDetailForm() {
                             </Form.Field>
                             <Form.Field error={!!errors.playbackAudioUrl}>
                                 <label>Audio</label>
-                                <AudioRecordField onChange={onStopRecording} />
+                                <AudioRecordField
+                                    onChange={handleStopRecording}
+                                />
+                                {card.playbackAudioUrl ? (
+                                    <AudioPlayer
+                                        ref={register}
+                                        src={card.playbackAudioUrl}
+                                        autoPlay={false}
+                                        autoPlayAfterSrcChange={false}
+                                        onPlay={(e) => {
+                                            e.stopPropagation();
+                                            e.preventDefault();
+                                        }}
+                                    />
+                                ) : undefined}
                             </Form.Field>
                             <Form.Field error={!!errors.bannerImageUrl}>
                                 <label>Banner Image</label>
@@ -98,6 +137,6 @@ function CardDetailForm() {
             </Grid>
         </div>
     );
-}
+};
 
 export default CardDetailForm;

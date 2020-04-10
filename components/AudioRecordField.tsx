@@ -1,10 +1,9 @@
 import React from "react";
 import { ReactMic, ReactMicProps, ReactMicStopEvent } from "react-mic";
 import { Button } from "semantic-ui-react";
-import AudioPlayer from "react-h5-audio-player";
 
 interface IAudioRecordProps extends ReactMicProps {
-    onChange(blobUrl: string): void;
+    onChange(audioBlob: Blob): void;
 }
 
 function useAudioRecordField() {
@@ -49,7 +48,7 @@ const AudioRecordField: React.FC<IAudioRecordProps> = (props) => {
     const handleStop = (event: ReactMicStopEvent) => {
         const playbackUrl = URL.createObjectURL(event.blob);
         saveRecording(playbackUrl);
-        props.onChange(playbackUrl);
+        props.onChange(event.blob);
     };
 
     return (
@@ -70,13 +69,6 @@ const AudioRecordField: React.FC<IAudioRecordProps> = (props) => {
                     Stop
                 </Button>
             )}
-            {playbackUrl ? (
-                <AudioPlayer
-                    src={playbackUrl}
-                    autoPlay={false}
-                    autoPlayAfterSrcChange={false}
-                />
-            ) : undefined}
         </div>
     );
 };
