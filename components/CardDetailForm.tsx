@@ -12,50 +12,45 @@ const AudioRecordField = dynamic(() => import("./AudioRecordField"), {
     ssr: false,
 });
 
-const CardFormSchema = yup.object().shape({
-    name: yup.string().required(),
-    summary: yup.string().required(),
-    body: yup.string().required(),
+type CardFormField = keyof Omit<ICard, "id" | "createdDate">;
+type CardFormViewModel = Record<CardFormField, any>;
+
+const CardFormSchema = yup.object().shape<CardFormViewModel>({
+    title: yup.string().required(),
+    phrase: yup.string().required(),
     translation: yup.string().required(),
     playbackAudioUrl: yup.string().required(),
-    bannerImageUrl: yup.string().required(),
 });
 
-async function createOrUpdateCard(audioBlob: Blob, data: ICard): Promise<void> {
+async function createOrUpdateCard(data: ICard): Promise<void> {
     if (!data.createdDate) {
-        const playbackAudioUrl = await firebaseClient.uploadAudio(audioBlob);
-        firebaseClient.createCard({
-            ...data,
-            playbackAudioUrl,
-            createdDate: Date.now(),
-        });
+        return firebaseClient.createCard(data);
     }
-    firebaseClient.updateCard(data);
+    return firebaseClient.updateCard(data);
 }
 
 const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
-    const { register, handleSubmit, setValue, errors } = useForm<
-        ICard
-    >({
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        errors,
+        watch,
+        getValues,
+    } = useForm<ICard>({
         validationSchema: CardFormSchema,
         defaultValues: { ...card },
     });
     const router = useRouter();
-    const [audioBlob, setAudioBlob] = React.useState<Blob>();
 
-    const onSubmit = handleSubmit(async (data: ICard) => {
-        if (!audioBlob) return undefined;
-        try {
-            await createOrUpdateCard(audioBlob, data);
+    const onSubmit = handleSubmit((data: ICard) => {
+        createOrUpdateCard(data).then(() => {
             router.push("/cards");
-        } catch (error) {
-            throw Error("There was a problem saving this card");
-        }
+        });
     });
 
     const handleStopRecording = (audioBlob: Blob) => {
         setValue("playbackAudioUrl", URL.createObjectURL(audioBlob));
-        setAudioBlob(audioBlob);
     };
 
     React.useEffect(() => {
@@ -67,51 +62,31 @@ const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
 
     return (
         <div>
+            {JSON.stringify(getValues())}
             <Grid columns={2}>
                 <Grid.Row>
                     <Grid.Column>
                         <Form onSubmit={onSubmit}>
-                            <Form.Field error={!!errors.name}>
-                                <label>Name</label>
-                                <input
-                                    name="name"
-                                    placeholder="Name"
-                                    ref={register}
-                                />
+                            <Form.Field error={!!errors.title}>
+                                <label>Title</label>
+                                <input name="title" ref={register} />
                             </Form.Field>
-                            <Form.Field error={!!errors.summary}>
-                                <label>Summary</label>
-                                <input
-                                    name="summary"
-                                    placeholder="Summary"
-                                    ref={register}
-                                />
-                            </Form.Field>
-                            <Form.Field error={!!errors.body}>
-                                <label>Body</label>
-                                <textarea
-                                    name="body"
-                                    placeholder="Body"
-                                    ref={register}
-                                />
+                            <Form.Field error={!!errors.phrase}>
+                                <label>Phrase</label>
+                                <input name="phrase" ref={register} />
                             </Form.Field>
                             <Form.Field error={!!errors.translation}>
                                 <label>Translation</label>
-                                <input
-                                    name="translation"
-                                    placeholder="Translation"
-                                    ref={register}
-                                />
+                                <input name="translation" ref={register} />
                             </Form.Field>
                             <Form.Field error={!!errors.playbackAudioUrl}>
                                 <label>Audio</label>
                                 <AudioRecordField
                                     onChange={handleStopRecording}
                                 />
-                                {card.playbackAudioUrl ? (
+                                {watch("playbackAudioUrl") ? (
                                     <AudioPlayer
-                                        ref={register}
-                                        src={card.playbackAudioUrl}
+                                        src={watch("playbackAudioUrl")}
                                         autoPlay={false}
                                         autoPlayAfterSrcChange={false}
                                         onPlay={(e) => {
@@ -120,14 +95,6 @@ const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
                                         }}
                                     />
                                 ) : undefined}
-                            </Form.Field>
-                            <Form.Field error={!!errors.bannerImageUrl}>
-                                <label>Banner Image</label>
-                                <input
-                                    name="bannerImageUrl"
-                                    placeholder="Banner Image"
-                                    ref={register}
-                                />
                             </Form.Field>
                             <Button type="submit">Submit</Button>
                         </Form>

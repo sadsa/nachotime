@@ -7,47 +7,19 @@ interface IAudioRecordProps extends ReactMicProps {
 }
 
 function useAudioRecordField() {
-    const [state, setState] = React.useState({
-        record: false,
-        playbackUrl: "",
-    });
+    const [record, setRecord] = React.useState(false);
 
-    const startRecording = React.useCallback(
-        () => setState((state) => ({ ...state, record: true })),
-        []
-    );
+    const startRecording = React.useCallback(() => setRecord(true), []);
 
-    const stopRecording = React.useCallback(
-        () =>
-            setState((state) => ({
-                ...state,
-                record: false,
-            })),
-        []
-    );
+    const stopRecording = React.useCallback(() => setRecord(false), []);
 
-    const saveRecording = React.useCallback((playbackUrl: string) => {
-        setState((state) => ({
-            ...state,
-            record: false,
-            playbackUrl,
-        }));
-    }, []);
-
-    return { state, startRecording, stopRecording, saveRecording };
+    return { record, startRecording, stopRecording };
 }
 
 const AudioRecordField: React.FC<IAudioRecordProps> = (props) => {
-    const {
-        state: { record, playbackUrl },
-        startRecording,
-        stopRecording,
-        saveRecording,
-    } = useAudioRecordField();
+    const { record, startRecording, stopRecording } = useAudioRecordField();
 
     const handleStop = (event: ReactMicStopEvent) => {
-        const playbackUrl = URL.createObjectURL(event.blob);
-        saveRecording(playbackUrl);
         props.onChange(event.blob);
     };
 

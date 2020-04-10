@@ -1,10 +1,8 @@
 export interface ICard {
     id: string;
-    name: string;
-    summary: string;
-    body: string;
+    title: string;
+    phrase: string;
     translation: string;
     playbackAudioUrl: string;
-    bannerImageUrl: string;
-    createdDate?: number;
+    createdDate: number;
 }

@@ -16,12 +16,11 @@ const Card: NextPage<ICard> = ({ ...card }) => {
 
 const emptyCard: ICard = {
     id: "",
-    name: "",
-    summary: "",
-    body: "",
+    title: "",
+    phrase: "",
     translation: "",
     playbackAudioUrl: "",
-    bannerImageUrl: "",
+    createdDate: 0,
 };
 
 Card.getInitialProps = async function (
