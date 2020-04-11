@@ -21,9 +21,10 @@ async function createCard(data: ICard): Promise<void> {
     const { id } = cardsRef.doc();
     const playbackAudioUrl = await uploadAudio(data.playbackAudioUrl, id);
     return await cardsRef.doc().set({
-        ...data,
+        id,
         playbackAudioUrl,
         createdDate: Date.now(),
+        ...data,
     });
 }
 

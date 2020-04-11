@@ -1,6 +1,6 @@
 import React from "react";
 import { ReactMic, ReactMicProps, ReactMicStopEvent } from "react-mic";
-import { Button } from "semantic-ui-react";
+import { Button, Icon } from "semantic-ui-react";
 
 interface IAudioRecordProps extends ReactMicProps {
     onChange(audioBlob: Blob): void;
@@ -24,23 +24,32 @@ const AudioRecordField: React.FC<IAudioRecordProps> = (props) => {
     };
 
     return (
-        <div>
+        <div className="record">
             <ReactMic
                 record={record}
                 className="sound-wave"
-                strokeColor="#000000"
-                backgroundColor="#FF4081"
+                strokeColor="green"
+                backgroundColor="#ffffff"
                 onStop={handleStop}
             />
             {!record ? (
-                <Button onClick={startRecording} type="button">
-                    Start
+                <Button onClick={startRecording} type="button" icon>
+                    <Icon name="play" /> Start
                 </Button>
             ) : (
-                <Button onClick={stopRecording} type="button">
-                    Stop
+                <Button onClick={stopRecording} type="button" icon>
+                    <Icon name="stop" /> Stop
                 </Button>
             )}
+            <style jsx>{`
+                .record {
+                    width: 100%;
+                    overflow-x: hidden;
+                }
+                .sound-wave {
+                    display: block;
+                }
+            `}</style>
         </div>
     );
 };

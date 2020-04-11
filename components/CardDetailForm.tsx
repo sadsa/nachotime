@@ -7,6 +7,7 @@ import * as yup from "yup";
 import { firebaseClient } from "../util/firebaseClient";
 import { useRouter } from "next/router";
 import AudioPlayer from "react-h5-audio-player";
+import PreviewCard from "./PreviewCard";
 
 const AudioRecordField = dynamic(() => import("./AudioRecordField"), {
     ssr: false,
@@ -62,11 +63,10 @@ const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
 
     return (
         <div>
-            {JSON.stringify(getValues())}
-            <Grid columns={2}>
-                <Grid.Row>
-                    <Grid.Column>
-                        <Form onSubmit={onSubmit}>
+            <Form onSubmit={onSubmit}>
+                <Grid columns={2}>
+                    <Grid.Row>
+                        <Grid.Column>
                             <Form.Field error={!!errors.title}>
                                 <label>Title</label>
                                 <input name="title" ref={register} />
@@ -80,10 +80,13 @@ const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
                                 <input name="translation" ref={register} />
                             </Form.Field>
                             <Form.Field error={!!errors.playbackAudioUrl}>
-                                <label>Audio</label>
+                                <label>Record Voice</label>
                                 <AudioRecordField
                                     onChange={handleStopRecording}
                                 />
+                            </Form.Field>
+                            <Form.Field error={!!errors.playbackAudioUrl}>
+                                <label>Playback</label>
                                 {watch("playbackAudioUrl") ? (
                                     <AudioPlayer
                                         src={watch("playbackAudioUrl")}
@@ -97,11 +100,16 @@ const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
                                 ) : undefined}
                             </Form.Field>
                             <Button type="submit">Submit</Button>
-                        </Form>
-                    </Grid.Column>
-                    <Grid.Column>preview</Grid.Column>
-                </Grid.Row>
-            </Grid>
+                        </Grid.Column>
+                        <Grid.Column>
+                            <Form.Field>
+                                <label>Preview</label>
+                                <PreviewCard {...watch()} />
+                            </Form.Field>
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+            </Form>
         </div>
     );
 };
