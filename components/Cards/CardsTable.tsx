@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Checkbox, Icon, Table } from "semantic-ui-react";
-import { ICard } from "../interfaces/card";
+import { ICard } from "../../interfaces/card";
 import Link from "next/link";
 
 type CardTableFields = "title" | "phrase" | "translation";
@@ -35,7 +35,7 @@ const CardsTable: React.FC<ICardsTableProps> = ({ cards }) => (
             {cards.map((card, index) => (
                 <Table.Row key={index}>
                     <Table.Cell collapsing>
-                        <Checkbox slider />
+                        <Checkbox />
                     </Table.Cell>
                     {Object.keys(columns).map((key, index) => (
                         <Table.Cell key={index}>

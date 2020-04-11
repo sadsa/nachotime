@@ -7,17 +7,15 @@ interface IAudioRecordProps extends ReactMicProps {
 }
 
 function useAudioRecordField() {
-    const [record, setRecord] = React.useState(false);
+    const [recording, setRecord] = React.useState(false);
 
-    const startRecording = React.useCallback(() => setRecord(true), []);
+    const toggleRecording = React.useCallback(() => setRecord(!recording), [recording]);
 
-    const stopRecording = React.useCallback(() => setRecord(false), []);
-
-    return { record, startRecording, stopRecording };
+    return { recording, toggleRecording };
 }
 
 const AudioRecordField: React.FC<IAudioRecordProps> = (props) => {
-    const { record, startRecording, stopRecording } = useAudioRecordField();
+    const { recording, toggleRecording } = useAudioRecordField();
 
     const handleStop = (event: ReactMicStopEvent) => {
         props.onChange(event.blob);
@@ -26,21 +24,21 @@ const AudioRecordField: React.FC<IAudioRecordProps> = (props) => {
     return (
         <div className="record">
             <ReactMic
-                record={record}
+                record={recording}
                 className="sound-wave"
                 strokeColor="green"
                 backgroundColor="#ffffff"
                 onStop={handleStop}
             />
-            {!record ? (
-                <Button onClick={startRecording} type="button" icon>
-                    <Icon name="play" /> Start
-                </Button>
-            ) : (
-                <Button onClick={stopRecording} type="button" icon>
-                    <Icon name="stop" /> Stop
-                </Button>
-            )}
+            <Button
+                onClick={toggleRecording}
+                type="button"
+                icon={recording ? "stop" : "microphone"}
+                circular
+                fluid
+                color={recording ? "red" : undefined}
+                size="massive"
+            />
             <style jsx>{`
                 .record {
                     width: 100%;

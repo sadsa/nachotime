@@ -1,13 +1,17 @@
 import React from "react";
-import CardDetailForm from "../../components/CardDetailForm";
-import { Header } from "semantic-ui-react";
+import CardDetailForm from "../../components/Cards/CardDetailForm";
+import { Header, Button } from "semantic-ui-react";
 import { NextPage, NextPageContext } from "next";
 import { firebaseClient } from "../../util/firebaseClient";
 import { ICard } from "../../interfaces/card";
+import Link from "next/link";
 
 const CardPage: NextPage<ICard> = ({ ...card }) => {
     return (
         <>
+            <Link href="/cards">
+                <Button basic content="< Back" />
+            </Link>
             <Header as="h1">Edit Card</Header>
             <CardDetailForm {...card} />
         </>

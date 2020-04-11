@@ -3,7 +3,7 @@ import { NextPage } from "next";
 import { Header } from "semantic-ui-react";
 import { ICard } from "../interfaces/card";
 import { firebaseClient } from "../util/firebaseClient";
-import CardsTable from "../components/CardsTable";
+import CardsTable from "../components/Cards/CardsTable";
 
 type CardsProps = {
     cards: ICard[];

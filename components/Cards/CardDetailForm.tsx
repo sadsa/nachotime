@@ -1,15 +1,15 @@
 import React from "react";
 import { Button, Form, Grid } from "semantic-ui-react";
 import { useForm } from "react-hook-form";
-import { ICard } from "../interfaces/card";
+import { ICard } from "../../interfaces/card";
 import dynamic from "next/dynamic";
 import * as yup from "yup";
-import { firebaseClient } from "../util/firebaseClient";
+import { firebaseClient } from "../../util/firebaseClient";
 import { useRouter } from "next/router";
 import AudioPlayer from "react-h5-audio-player";
 import PreviewCard from "./PreviewCard";
 
-const AudioRecordField = dynamic(() => import("./AudioRecordField"), {
+const AudioRecordField = dynamic(() => import("../common/AudioRecordField"), {
     ssr: false,
 });
 
@@ -31,24 +31,20 @@ async function createOrUpdateCard(data: ICard): Promise<void> {
 }
 
 const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
-    const {
-        register,
-        handleSubmit,
-        setValue,
-        errors,
-        watch,
-        getValues,
-    } = useForm<ICard>({
+    const { register, handleSubmit, setValue, errors, watch } = useForm<ICard>({
         validationSchema: CardFormSchema,
         defaultValues: { ...card },
     });
     const router = useRouter();
 
-    const onSubmit = handleSubmit((data: ICard) => {
-        createOrUpdateCard(data).then(() => {
-            router.push("/cards");
+    const onSubmit = (e: React.SyntheticEvent) => {
+        if (e.currentTarget.id !== "submit") return undefined;
+        handleSubmit((data: ICard) => {
+            createOrUpdateCard(data).then(() => {
+                router.push("/cards");
+            });
         });
-    });
+    };
 
     const handleStopRecording = (audioBlob: Blob) => {
         setValue("playbackAudioUrl", URL.createObjectURL(audioBlob));
@@ -92,14 +88,13 @@ const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
                                         src={watch("playbackAudioUrl")}
                                         autoPlay={false}
                                         autoPlayAfterSrcChange={false}
-                                        onPlay={(e) => {
-                                            e.stopPropagation();
-                                            e.preventDefault();
-                                        }}
+                                        layout="horizontal-reverse"
                                     />
                                 ) : undefined}
                             </Form.Field>
-                            <Button type="submit">Submit</Button>
+                            <Button type="submit" id="submit">
+                                Submit
+                            </Button>
                         </Grid.Column>
                         <Grid.Column>
                             <Form.Field>
