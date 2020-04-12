@@ -18,18 +18,22 @@ async function getCard(id: string): Promise<ICard> {
 }
 
 async function createCard(data: ICard): Promise<void> {
-    const { id } = cardsRef.doc();
-    const playbackAudioUrl = await uploadAudio(data.playbackAudioUrl, id);
-    return await cardsRef.doc().set({
-        id,
+    const docRef = cardsRef.doc();
+    const playbackAudioUrl = await uploadAudio(data.playbackAudioUrl, docRef.id);
+    return await docRef.set({
+        id: docRef.id,
         playbackAudioUrl,
-        createdDate: Date.now(),
+        createdDate: firebase.firestore.Timestamp.now(),
         ...data,
     });
 }
 
 async function updateCard(data: ICard): Promise<void> {
-    return await cardsRef.doc().set(data);
+    return await cardsRef.doc().update(data);
+}
+
+async function deleteCard(id: string): Promise<void> {
+    return await cardsRef.doc().delete();
 }
 
 async function uploadAudio(url: string, id: string): Promise<string> {
@@ -48,5 +52,6 @@ export const firebaseClient = {
     getCards,
     createCard,
     updateCard,
+    deleteCard,
     uploadAudio,
 };

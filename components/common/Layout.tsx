@@ -38,12 +38,15 @@ const Layout: React.FC<any> = (props) => (
                         <a>Cards</a>
                     </Link>
                 </Menu.Item>
+                <Menu.Item>
+                    <Link href="/review">
+                        <a>Review</a>
+                    </Link>
+                </Menu.Item>
             </Container>
         </Menu>
 
-        <Container style={{ marginTop: "7em" }}>
-            {props.children}
-        </Container>
+        <Container style={{ marginTop: "7em" }}>{props.children}</Container>
 
         <Segment
             inverted
