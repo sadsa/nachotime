@@ -1,4 +1,4 @@
-import { IExpression } from "./Expression";
+import { IExpression } from "./expression";
 
 export interface ICard {
     id: string;
