@@ -38,11 +38,6 @@ const Layout: React.FC<any> = (props) => (
                         <a>Cards</a>
                     </Link>
                 </Menu.Item>
-                <Menu.Item>
-                    <Link href="/review">
-                        <a>Review</a>
-                    </Link>
-                </Menu.Item>
             </Container>
         </Menu>
 

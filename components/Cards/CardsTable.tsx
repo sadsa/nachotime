@@ -3,6 +3,7 @@ import { Button, Checkbox, Icon, Table, Confirm } from "semantic-ui-react";
 import { ICard } from "../../interfaces/card";
 import Link from "next/link";
 import { firebaseClient } from "../../util/firebaseClient";
+import { useRouter } from "next/router";
 
 type CardTableFields = "title" | "phrase" | "translation";
 
@@ -20,12 +21,14 @@ interface ICardsTableProps {
 
 const CardsTable: React.FC<ICardsTableProps> = ({ cards }) => {
     const [showConfirm, setShowConfirm] = React.useState(false);
+    const { reload } = useRouter();
     const handleClickDelete = () => {
         setShowConfirm(true);
     };
     const onDeleteConfirm = (card: ICard) => {
         firebaseClient.deleteCard(card.id).then(() => {
             setShowConfirm(false);
+            reload();
         });
     }
     return (
@@ -57,6 +60,11 @@ const CardsTable: React.FC<ICardsTableProps> = ({ cards }) => {
                             <Link href={`card/${card.id}`}>
                                 <Button>
                                     <Icon name="edit" /> Edit
+                                </Button>
+                            </Link>
+                            <Link href={`card/view/${card.id}`}>
+                                <Button>
+                                    <Icon name="eye" /> View
                                 </Button>
                             </Link>
                             <Button

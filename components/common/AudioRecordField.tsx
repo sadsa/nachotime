@@ -1,6 +1,6 @@
 import React from "react";
 import { ReactMic, ReactMicProps, ReactMicStopEvent } from "react-mic";
-import { Button, Icon } from "semantic-ui-react";
+import { Button } from "semantic-ui-react";
 
 interface IAudioRecordProps extends ReactMicProps {
     onChange(audioBlob: Blob): void;

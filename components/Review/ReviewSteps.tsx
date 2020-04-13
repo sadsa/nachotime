@@ -18,7 +18,7 @@ const ReviewSteps: React.FC = () => (
         <Step disabled>
             <Icon name="microphone" />
             <Step.Content>
-                <Step.Title>Review</Step.Title>
+                <Step.Title>Repeat</Step.Title>
             </Step.Content>
         </Step>
     </Step.Group>

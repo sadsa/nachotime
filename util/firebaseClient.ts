@@ -19,7 +19,10 @@ async function getCard(id: string): Promise<ICard> {
 
 async function createCard(data: ICard): Promise<void> {
     const docRef = cardsRef.doc();
-    const playbackAudioUrl = await uploadAudio(data.playbackAudioUrl, docRef.id);
+    const playbackAudioUrl = await uploadAudio(
+        data.playbackAudioUrl,
+        docRef.id
+    );
     return await docRef.set({
         id: docRef.id,
         playbackAudioUrl,
@@ -29,11 +32,19 @@ async function createCard(data: ICard): Promise<void> {
 }
 
 async function updateCard(data: ICard): Promise<void> {
-    return await cardsRef.doc().update(data);
+    const docRef = cardsRef.doc(data.id);
+    const playbackAudioUrl = await uploadAudio(
+        data.playbackAudioUrl,
+        docRef.id
+    );
+    return await docRef.set({
+        playbackAudioUrl,
+        ...data,
+    });
 }
 
 async function deleteCard(id: string): Promise<void> {
-    return await cardsRef.doc().delete();
+    return await cardsRef.doc(id).delete();
 }
 
 async function uploadAudio(url: string, id: string): Promise<string> {
