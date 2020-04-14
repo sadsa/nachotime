@@ -27,7 +27,6 @@ const CardsTable: React.FC<ICardsTableProps> = ({ cards }) => {
     };
     const onDeleteConfirm = (card: ICard) => {
         firebaseClient.deleteCard(card.id).then(() => {
-            setShowConfirm(false);
             reload();
         });
     }

@@ -24,10 +24,10 @@ async function createCard(data: ICard): Promise<void> {
         docRef.id
     );
     return await docRef.set({
+        ...data,
         id: docRef.id,
         playbackAudioUrl,
         createdDate: firebase.firestore.Timestamp.now(),
-        ...data,
     });
 }
 
@@ -38,8 +38,8 @@ async function updateCard(data: ICard): Promise<void> {
         docRef.id
     );
     return await docRef.set({
-        playbackAudioUrl,
         ...data,
+        playbackAudioUrl,
     });
 }
 

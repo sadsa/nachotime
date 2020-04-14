@@ -56,8 +56,9 @@ const ReviewCard: React.FC<IExerciseCardProps> = ({
                     </Header>
                     <Label.Group color="blue" size="medium">
                         {expressions
-                            ? expressions.map((exp) => (
+                            ? expressions.map((exp, index) => (
                                   <Popup
+                                      key={index}
                                       trigger={<Label content={exp.value} />}
                                   >
                                       <List>

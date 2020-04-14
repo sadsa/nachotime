@@ -1,13 +1,12 @@
 import React from "react";
-import { Button, Form, Grid, TextArea } from "semantic-ui-react";
+import { Button, Form, Grid } from "semantic-ui-react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { ICard } from "../../interfaces/card";
 import dynamic from "next/dynamic";
 import * as yup from "yup";
 import { firebaseClient } from "../../util/firebaseClient";
 import { useRouter } from "next/router";
-import AudioPlayer from "react-h5-audio-player";
-    
+
 const AudioRecordField = dynamic(() => import("../common/AudioRecordField"), {
     ssr: false,
 });
@@ -15,12 +14,19 @@ const AudioRecordField = dynamic(() => import("../common/AudioRecordField"), {
 type CardFormField = keyof Omit<ICard, "id" | "createdDate">;
 type CardFormViewModel = Record<CardFormField, any>;
 
+enum StatusEnum {
+    idle = "idle",
+    pending = "pending",
+    resolved = "resolved",
+    rejected = "rejected",
+}
+
 const CardFormSchema = yup.object().shape<CardFormViewModel>({
     title: yup.string().required(),
     phrase: yup.string().required(),
     translation: yup.string().required(),
     playbackAudioUrl: yup.string().required(),
-    expressions: yup.array().of(yup.object()).required(),
+    expressions: yup.array().of(yup.object()),
 });
 
 async function createOrUpdateCard(data: ICard): Promise<void> {
@@ -31,14 +37,9 @@ async function createOrUpdateCard(data: ICard): Promise<void> {
 }
 
 const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
-    const {
-        register,
-        handleSubmit,
-        setValue,
-        errors,
-        watch,
-        control,
-    } = useForm<ICard>({
+    const { register, handleSubmit, setValue, errors, control } = useForm<
+        ICard
+    >({
         validationSchema: CardFormSchema,
         defaultValues: { ...card },
     });
@@ -47,12 +48,16 @@ const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
         name: "expressions",
     });
     const router = useRouter();
+    const [status, setStatus] = React.useState(StatusEnum.resolved);
 
     const onSubmit = (data: ICard) => {
-        // console.log(data);
-        createOrUpdateCard(data).then(() => {
-            router.push("/cards");
-        });
+        setStatus(StatusEnum.pending);
+        createOrUpdateCard(data)
+            .then(() => {
+                router.push("/cards");
+                setStatus(StatusEnum.resolved);
+            })
+            .catch(() => setStatus(StatusEnum.rejected));
     };
 
     const handleStopRecording = (audioBlob: Blob) => {
@@ -68,7 +73,10 @@ const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
 
     return (
         <div>
-            <Form onSubmit={handleSubmit(onSubmit)}>
+            <Form
+                onSubmit={handleSubmit(onSubmit)}
+                loading={status === StatusEnum.pending}
+            >
                 <Grid columns={2}>
                     <Grid.Row>
                         <Grid.Column width="ten">
@@ -137,19 +145,8 @@ const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
                                 <label>Record Voice</label>
                                 <AudioRecordField
                                     onChange={handleStopRecording}
+                                    playbackAudioUrl={card.playbackAudioUrl}
                                 />
-                            </Form.Field>
-                            <Form.Field error={!!errors.playbackAudioUrl}>
-                                <label>Playback</label>
-                                {watch("playbackAudioUrl") ? (
-                                    <AudioPlayer
-                                        src={watch("playbackAudioUrl")}
-                                        autoPlay={false}
-                                        autoPlayAfterSrcChange={false}
-                                        onPlay={(e) => e.stopPropagation()}
-                                        layout="horizontal-reverse"
-                                    />
-                                ) : undefined}
                             </Form.Field>
                             <Button type="submit" id="submit">
                                 Submit
