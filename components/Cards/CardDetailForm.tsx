@@ -86,11 +86,21 @@ const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
                             </Form.Field>
                             <Form.Field error={!!errors.phrase}>
                                 <label>Phrase</label>
-                                <input name="phrase" ref={register} />
+                                <textarea
+                                    name="phrase"
+                                    ref={register}
+                                    className="textarea"
+                                    rows={4}
+                                />
                             </Form.Field>
                             <Form.Field error={!!errors.translation}>
                                 <label>Translation</label>
-                                <input name="translation" ref={register} />
+                                <textarea
+                                    name="translation"
+                                    ref={register}
+                                    className="textarea"
+                                    rows={4}
+                                />
                             </Form.Field>
                             <Form.Field error={!!errors.expressions}>
                                 <label>Expressions</label>
