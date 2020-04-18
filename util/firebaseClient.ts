@@ -37,14 +37,14 @@ async function updateCard(data: ICard): Promise<void> {
         data.playbackAudioUrl,
         docRef.id
     );
-    return await docRef.set({
+    return await docRef.update({
         ...data,
         playbackAudioUrl,
     });
 }
 
 async function deleteCard(id: string): Promise<void> {
-    return await cardsRef.doc(id).delete();
+    return cardsRef.doc(id).delete();
 }
 
 async function uploadAudio(url: string, id: string): Promise<string> {

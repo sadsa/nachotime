@@ -12,7 +12,7 @@ type CardTableHeaders = Partial<Record<CardTableFields, string>>;
 const columns: CardTableHeaders = {
     title: "Title",
     phrase: "Phrase",
-    translation: "Translation"
+    translation: "Translation",
 };
 
 interface ICardsTableProps {
@@ -21,88 +21,113 @@ interface ICardsTableProps {
 
 const CardsTable: React.FC<ICardsTableProps> = ({ cards }) => {
     const [showConfirm, setShowConfirm] = React.useState(false);
+    const [selected, setSelected] = React.useState<string[]>([]);
     const { reload } = useRouter();
+    const handleCheck = (cardId: string) => {
+        const selectedIds = Object.assign([], selected);
+        const index = selectedIds.indexOf(cardId);
+        if (index >= 0) {
+            selectedIds.splice(index, 1);
+        } else {
+            selectedIds.push(cardId);
+        }
+        setSelected(selectedIds);
+    };
     const handleClickDelete = () => {
         setShowConfirm(true);
     };
-    const onDeleteConfirm = (card: ICard) => {
-        firebaseClient.deleteCard(card.id).then(() => {
-            reload();
-        });
-    }
+    const onDeleteConfirm = () => {
+        Promise.all(selected.map((id) => firebaseClient.deleteCard(id))).then(
+            () => {
+                reload();
+            }
+        );
+    };
     return (
-        <Table celled compact definition>
-            <Table.Header fullWidth>
-                <Table.Row>
-                    <Table.HeaderCell />
-                    {Object.keys(columns).map((key, index) => (
-                        <Table.HeaderCell key={index}>
-                            {columns[key as CardTableFields]}
-                        </Table.HeaderCell>
-                    ))}
-                    <Table.HeaderCell />
-                </Table.Row>
-            </Table.Header>
-
-            <Table.Body>
-                {cards.map((card, index) => (
-                    <Table.Row key={index}>
-                        <Table.Cell collapsing>
-                            <Checkbox />
-                        </Table.Cell>
+        <>
+            <Table celled compact definition>
+                <Table.Header fullWidth>
+                    <Table.Row>
+                        <Table.HeaderCell />
                         {Object.keys(columns).map((key, index) => (
-                            <Table.Cell key={index}>
-                                {card[key as keyof ICard]}
-                            </Table.Cell>
+                            <Table.HeaderCell key={index}>
+                                {columns[key as CardTableFields]}
+                            </Table.HeaderCell>
                         ))}
-                        <Table.Cell collapsing>
-                            <Link href={`card/${card.id}`}>
-                                <Button>
-                                    <Icon name="edit" /> Edit
-                                </Button>
-                            </Link>
-                            <Link href={`card/view/${card.id}`}>
-                                <Button>
-                                    <Icon name="eye" /> View
-                                </Button>
-                            </Link>
-                            <Button
-                                icon
-                                color="red"
-                                onClick={handleClickDelete}
-                            >
-                                <Icon name="trash" />
-                            </Button>
-                            <Confirm
-                                open={showConfirm}
-                                onCancel={() => setShowConfirm(false)}
-                                onConfirm={() => onDeleteConfirm(card)}
-                            />
-                        </Table.Cell>
+                        <Table.HeaderCell />
                     </Table.Row>
-                ))}
-            </Table.Body>
+                </Table.Header>
 
-            <Table.Footer fullWidth>
-                <Table.Row>
-                    <Table.HeaderCell />
-                    <Table.HeaderCell colSpan="5">
-                        <Link href="card/create">
-                            <Button
-                                floated="right"
-                                icon
-                                labelPosition="left"
-                                primary
-                                size="small"
-                            >
-                                <Icon name="add square" />
-                                Create New
-                            </Button>
-                        </Link>
-                    </Table.HeaderCell>
-                </Table.Row>
-            </Table.Footer>
-        </Table>
+                <Table.Body>
+                    {cards.map((card, index) => (
+                        <Table.Row key={index}>
+                            <Table.Cell collapsing>
+                                <Checkbox
+                                    onChange={() => handleCheck(card.id)}
+                                />
+                            </Table.Cell>
+                            {Object.keys(columns).map((key, index) => (
+                                <Table.Cell key={index}>
+                                    {card[key as keyof ICard]}
+                                </Table.Cell>
+                            ))}
+                            <Table.Cell collapsing>
+                                <Link href={`card/${card.id}`}>
+                                    <Button>
+                                        <Icon name="edit" /> Edit
+                                    </Button>
+                                </Link>
+                                <Link href={`card/view/${card.id}`}>
+                                    <Button>
+                                        <Icon name="eye" /> View
+                                    </Button>
+                                </Link>
+                            </Table.Cell>
+                        </Table.Row>
+                    ))}
+                </Table.Body>
+
+                <Table.Footer fullWidth>
+                    <Table.Row>
+                        <Table.HeaderCell />
+                        <Table.HeaderCell colSpan="2">
+                            {selected?.length ? (
+                                <Button
+                                    icon
+                                    floated="left"
+                                    color="red"
+                                    labelPosition="left"
+                                    onClick={handleClickDelete}
+                                    size="small"
+                                >
+                                    <Icon name="trash" />
+                                    Delete
+                                </Button>
+                            ) : undefined}
+                        </Table.HeaderCell>
+                        <Table.HeaderCell colSpan="3">
+                            <Link href="card/create">
+                                <Button
+                                    floated="right"
+                                    icon
+                                    labelPosition="left"
+                                    primary
+                                    size="small"
+                                >
+                                    <Icon name="add square" />
+                                    Create New
+                                </Button>
+                            </Link>
+                        </Table.HeaderCell>
+                    </Table.Row>
+                </Table.Footer>
+            </Table>
+            <Confirm
+                open={showConfirm}
+                onCancel={() => setShowConfirm(false)}
+                onConfirm={() => onDeleteConfirm()}
+            />
+        </>
     );
 };
 
