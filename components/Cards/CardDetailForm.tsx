@@ -30,7 +30,7 @@ const CardFormSchema = yup.object().shape<CardFormViewModel>({
 });
 
 async function createOrUpdateCard(data: ICard): Promise<void> {
-    if (!data.createdDate) {
+    if (!data.id) {
         return firebaseClient.createCard(data);
     }
     return firebaseClient.updateCard(data);
