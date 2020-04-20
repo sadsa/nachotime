@@ -30,7 +30,7 @@ const CardFormSchema = yup.object().shape<CardFormViewModel>({
 });
 
 async function createOrUpdateCard(data: ICard): Promise<void> {
-    if (!data.createdDate) {
+    if (!data.id) {
         return firebaseClient.createCard(data);
     }
     return firebaseClient.updateCard(data);
@@ -50,9 +50,9 @@ const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
     const router = useRouter();
     const [status, setStatus] = React.useState(StatusEnum.resolved);
 
-    const onSubmit = (data: ICard) => {
+    const onSubmit = (data: Partial<ICard>) => {
         setStatus(StatusEnum.pending);
-        createOrUpdateCard(data)
+        createOrUpdateCard({ ...card, ...data })
             .then(() => {
                 router.push("/cards");
                 setStatus(StatusEnum.resolved);
