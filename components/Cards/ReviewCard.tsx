@@ -2,8 +2,38 @@ import React from "react";
 import { ICard } from "../../interfaces/card";
 import { Button, Segment, Header, List, Popup, Label } from "semantic-ui-react";
 import { formatShortDate } from "../../util/dateUtils";
+import { IExpression } from "../../interfaces/expression";
+import classnames from "classnames";
 
 interface IExerciseCardProps extends ICard {}
+
+function breakPhraseIntoSegments(
+    phrase: string,
+    expressions: IExpression[]
+): IExpression[] {
+    const portions: string[] = getPhraseAsPortions(phrase, expressions);
+    const segments: IExpression[] = portions.map((portion) => {
+        const expressionFound = expressions.find(
+            (exp) => exp.value === portion
+        );
+        if (expressionFound) {
+            return expressionFound;
+        }
+        return { value: portion };
+    });
+    return segments;
+}
+
+function getPhraseAsPortions(phrase: string, expressions: any) {
+    const separator = "|";
+    expressions.forEach((expression: any) => {
+        phrase = phrase.replace(
+            new RegExp(expression.value, "g"),
+            separator + expression.value + separator
+        );
+    });
+    return phrase.split(separator);
+}
 
 const ReviewCard: React.FC<IExerciseCardProps> = ({
     createdDate,
@@ -13,14 +43,19 @@ const ReviewCard: React.FC<IExerciseCardProps> = ({
     expressions,
 }) => {
     const [revealed, reveal] = React.useState(false);
+    const phraseAsExpressions: IExpression[] = breakPhraseIntoSegments(
+        phrase,
+        expressions
+    );
     function handlePlayAudio() {
         const track = new Audio(playbackAudioUrl);
         track.play();
     }
+
     return (
         <Segment size="massive" textAlign="center">
             <div className="review-card">
-                <p>
+                <div className="bottom-spacer">
                     <Button
                         icon="volume up"
                         className="playback-button"
@@ -30,7 +65,7 @@ const ReviewCard: React.FC<IExerciseCardProps> = ({
                         onClick={handlePlayAudio}
                         style={{ fontSize: "2.5rem" }}
                     />
-                </p>
+                </div>
                 <Header>
                     {createdDate ? (
                         <Header.Subheader>
@@ -40,8 +75,14 @@ const ReviewCard: React.FC<IExerciseCardProps> = ({
                         "No Date"
                     )}
                 </Header>
-                <p className="phrase">{revealed ? translation : phrase}</p>
-                <p>
+                <div className="phrase bottom-spacer">
+                    {revealed
+                        ? translation
+                        : phraseAsExpressions.map((expression, index) => (
+                              <Expression key={index} {...expression} />
+                          ))}
+                </div>
+                <div className="bottom-spacer">
                     <Button
                         icon="eye"
                         content={`${revealed ? "Hide" : "Show"} Translation`}
@@ -49,57 +90,23 @@ const ReviewCard: React.FC<IExerciseCardProps> = ({
                         size="small"
                         onClick={() => reveal(!revealed)}
                     />
-                </p>
-                <div>
-                    <Header>
-                        <Header.Subheader>Expressions</Header.Subheader>
-                    </Header>
-                    <Label.Group color="blue" size="medium">
-                        {expressions
-                            ? expressions.map((exp, index) => (
-                                  <Popup
-                                      key={index}
-                                      trigger={<Label content={exp.value} />}
-                                  >
-                                      <List>
-                                          <List.Item>
-                                              <List.Content>
-                                                  <List.Header>
-                                                      Translation
-                                                  </List.Header>
-                                                  <List.Description>
-                                                      {exp.translation}
-                                                  </List.Description>
-                                              </List.Content>
-                                          </List.Item>
-                                          <List.Item>
-                                              <List.Content>
-                                                  <List.Header>
-                                                      Definition
-                                                  </List.Header>
-                                                  <List.Description>
-                                                      {exp.definition}
-                                                  </List.Description>
-                                              </List.Content>
-                                          </List.Item>
-                                      </List>
-                                  </Popup>
-                              ))
-                            : null}
-                    </Label.Group>
                 </div>
                 <style jsx>{`
                     .review-card {
-                        padding: 2em 6em;
+                        padding: 2em;
                     }
-                    .phrase {
-                        padding-top: 1em;
-                        padding-bottom: 1em;
-                        width: 540px;
+                    .review-card .phrase {
+                        padding-top: 2em;
+                        padding-bottom: 2em;
+                        width: 100%;
+                        text-align: center;
                         margin: auto;
                     }
                     .review-card button {
                         font-size: 2.714286rem;
+                    }
+                    .review-card .spacer {
+                        margin: 0 0 1em;
                     }
                 `}</style>
             </div>
@@ -108,3 +115,56 @@ const ReviewCard: React.FC<IExerciseCardProps> = ({
 };
 
 export default ReviewCard;
+
+interface IExpressionProps extends IExpression {}
+
+export const Expression: React.FC<IExpressionProps> = ({
+    value,
+    translation,
+}) => {
+    const [hidden, setHidden] = React.useState(true);
+    return (
+        <span className="expression">
+            <Popup
+                disabled={!translation}
+                size="huge"
+                position="top center"
+                trigger={
+                    <Label
+                        size="huge"
+                        color={translation ? "yellow" : undefined}
+                        style={{
+                            fontSize: "24px",
+                            display: "inline-block",
+                            marginBottom: "4px",
+                        }}
+                        className={classnames("expression-label", {
+                            "is-hidden": hidden,
+                        })}
+                        content={value}
+                    />
+                }
+            >
+                {translation}
+            </Popup>
+            <style jsx>{`
+                .expression {
+                    font-style: normal;
+                    display: inline-block;
+                    position: relative;
+                    padding: 4px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                }
+                .expression-label {
+                    font-size: 24px;
+                    display: inline-block;
+                    margin-bottom: 10px;
+                }
+                .expression-label.is-hidden {
+                    visibility: hidden;
+                }
+            `}</style>
+        </span>
+    );
+};

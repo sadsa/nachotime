@@ -15,7 +15,6 @@ const emptyCard: ICard = {
         {
             value: "",
             translation: "",
-            type: "word",
         },
     ],
 };

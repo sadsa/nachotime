@@ -6,6 +6,6 @@ export interface ICard {
     phrase: string;
     translation: string;
     playbackAudioUrl: string;
+    expressions: IExpression[];
     createdDate?: firebase.firestore.Timestamp;
-    expressions?: IExpression[];
 }

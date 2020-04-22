@@ -1,6 +1,11 @@
+export enum ExpressionType {
+    new = "new",
+    known = "known",
+}
+
 export interface IExpression {
     value: string;
-    type: "word" | "expression";
-    translation: string;
+    type?: keyof typeof ExpressionType;
+    translation?: string;
     definition?: string;
 }

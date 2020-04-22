@@ -1,7 +1,6 @@
+import { IExpression } from "./expression";
+
 export interface IPhraseSegment {
     value: string;
-    meta?: {
-        translation: string;
-        type: "word" | "expression";
-    };
+    meta?: IExpression;
 }
