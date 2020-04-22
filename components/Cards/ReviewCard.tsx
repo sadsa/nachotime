@@ -17,9 +17,9 @@ function breakPhraseIntoSegments(
             (exp) => exp.value === portion
         );
         if (expressionFound) {
-            return expressionFound;
+            return { ...expressionFound };
         }
-        return { value: portion };
+        return { value: portion, known: true };
     });
     return segments;
 }
@@ -79,7 +79,14 @@ const ReviewCard: React.FC<IExerciseCardProps> = ({
                     {revealed
                         ? translation
                         : phraseAsExpressions.map((expression, index) => (
-                              <Expression key={index} {...expression} />
+                              <div
+                                  key={index}
+                                  className={classnames("expression", {
+                                      known: expression.known,
+                                  })}
+                              >
+                                  <Expression {...expression} />
+                              </div>
                           ))}
                 </div>
                 <div className="bottom-spacer">
@@ -101,12 +108,18 @@ const ReviewCard: React.FC<IExerciseCardProps> = ({
                         width: 100%;
                         text-align: center;
                         margin: auto;
+                        font-size: 24px;
+                        line-height: 1.5em;
+                        font-weight: 700;
                     }
                     .review-card button {
                         font-size: 2.714286rem;
                     }
                     .review-card .spacer {
                         margin: 0 0 1em;
+                    }
+                    .review-card .expression {
+                        display: inline-block;
                     }
                 `}</style>
             </div>
@@ -121,50 +134,46 @@ interface IExpressionProps extends IExpression {}
 export const Expression: React.FC<IExpressionProps> = ({
     value,
     translation,
+    known,
 }) => {
-    const [hidden, setHidden] = React.useState(true);
+    const [hidden, setHidden] = React.useState(!known);
+    const handleClick = () => {
+        setHidden(!hidden);
+    };
     return (
-        <span className="expression">
-            <Popup
-                disabled={!translation}
-                size="huge"
-                position="top center"
-                trigger={
-                    <Label
-                        size="huge"
-                        color={translation ? "yellow" : undefined}
-                        style={{
-                            fontSize: "24px",
-                            display: "inline-block",
-                            marginBottom: "4px",
-                        }}
-                        className={classnames("expression-label", {
-                            "is-hidden": hidden,
-                        })}
-                        content={value}
-                    />
-                }
-            >
-                {translation}
-            </Popup>
-            <style jsx>{`
-                .expression {
-                    font-style: normal;
-                    display: inline-block;
-                    position: relative;
-                    padding: 4px;
-                    border-radius: 6px;
-                    cursor: pointer;
-                }
-                .expression-label {
-                    font-size: 24px;
-                    display: inline-block;
-                    margin-bottom: 10px;
-                }
-                .expression-label.is-hidden {
-                    visibility: hidden;
-                }
-            `}</style>
-        </span>
+        <Popup
+            disabled={!translation}
+            size="huge"
+            position="top center"
+            trigger={
+                <Label
+                    size="huge"
+                    basic={known ? true : false}
+                    color={!known ? "yellow" : undefined}
+                    style={{
+                        fontSize: "24px",
+                        cursor: !known ? "pointer" : undefined,
+                        display: "inline-block",
+                        backgroundColor: known && "transparent",
+                        marginBottom: "4px",
+                        marginLeft: !known && "-0.415em",
+                        marginRight: !known && "-0.415em",
+                        borderColor: !known ? "currentColor" : "transparent",
+                    }}
+                    onClick={handleClick}
+                    content={
+                        hidden ? (
+                            <span style={{ visibility: "hidden" }}>
+                                {value}
+                            </span>
+                        ) : (
+                            value
+                        )
+                    }
+                />
+            }
+        >
+            {translation}
+        </Popup>
     );
 };
