@@ -9,34 +9,18 @@ import {
     Menu,
     Segment
 } from "semantic-ui-react";
-import Link from "next/link";
 
 const Layout: React.FC<any> = props => (
     <div>
-        <Menu inverted>
+        <Menu borderless>
             <Container>
-                <Menu.Item as="a" href="/" header>
+                <Menu.Item header>
                     <Image
                         size="mini"
                         src="/images/logo.png"
                         style={{ marginRight: "1.5em" }}
                     />
                     Nachotime!
-                </Menu.Item>
-                <Menu.Item>
-                    <Link href="/">
-                        <a>Home</a>
-                    </Link>
-                </Menu.Item>
-                <Menu.Item>
-                    <Link href="/exercises">
-                        <a>Exercises</a>
-                    </Link>
-                </Menu.Item>
-                <Menu.Item>
-                    <Link href="/cards">
-                        <a>Cards</a>
-                    </Link>
                 </Menu.Item>
             </Container>
         </Menu>
