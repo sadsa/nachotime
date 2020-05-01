@@ -7,13 +7,13 @@ import {
     Image,
     List,
     Menu,
-    Segment,
+    Segment
 } from "semantic-ui-react";
 import Link from "next/link";
 
-const Layout: React.FC<any> = (props) => (
+const Layout: React.FC<any> = props => (
     <div>
-        <Menu fixed="top" inverted>
+        <Menu inverted>
             <Container>
                 <Menu.Item as="a" href="/" header>
                     <Image
@@ -41,7 +41,7 @@ const Layout: React.FC<any> = (props) => (
             </Container>
         </Menu>
 
-        <Container style={{ marginTop: "7em" }}>{props.children}</Container>
+        <Container>{props.children}</Container>
 
         <Segment
             inverted
