@@ -7,5 +7,5 @@ export interface ICard {
     translation: string;
     playbackAudioUrl: string;
     expressions: IExpression[];
-    createdDate?: firebase.firestore.Timestamp;
+    createdDate: firebase.firestore.Timestamp;
 }

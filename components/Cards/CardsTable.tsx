@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 
 type CardTableFields = "title" | "phrase" | "translation";
 
-type CardTableHeaders = Partial<Record<CardTableFields, string>>;
+type CardTableHeaders = Record<CardTableFields, string>;
 
 const columns: CardTableHeaders = {
     title: "Title",
@@ -54,7 +54,18 @@ const CardsTable: React.FC<ICardsTableProps> = ({ cards }) => {
                                 {columns[key as CardTableFields]}
                             </Table.HeaderCell>
                         ))}
-                        <Table.HeaderCell />
+                        <Table.HeaderCell>
+                            {selected?.length ? (
+                                <Button
+                                    icon
+                                    floated="right"
+                                    color="red"
+                                    onClick={handleClickDelete}
+                                >
+                                    <Icon name="trash" />
+                                </Button>
+                            ) : undefined}
+                        </Table.HeaderCell>
                     </Table.Row>
                 </Table.Header>
 
@@ -66,20 +77,21 @@ const CardsTable: React.FC<ICardsTableProps> = ({ cards }) => {
                                     onChange={() => handleCheck(card.id)}
                                 />
                             </Table.Cell>
-                            {Object.keys(columns).map((key, index) => (
-                                <Table.Cell key={index}>
-                                    {card[key as keyof ICard]}
-                                </Table.Cell>
-                            ))}
+                            {Object.keys(columns).map((key, index) => {
+                                const value: any = card[key as keyof ICard];
+                                return (
+                                    <Table.Cell key={index}>{value}</Table.Cell>
+                                );
+                            })}
                             <Table.Cell collapsing>
                                 <Link href={`card/${card.id}`}>
-                                    <Button>
-                                        <Icon name="edit" /> Edit
+                                    <Button icon>
+                                        <Icon name="edit" />
                                     </Button>
                                 </Link>
                                 <Link href={`card/view/${card.id}`}>
-                                    <Button>
-                                        <Icon name="eye" /> View
+                                    <Button icon>
+                                        <Icon name="eye" />
                                     </Button>
                                 </Link>
                             </Table.Cell>

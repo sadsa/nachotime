@@ -1,13 +1,20 @@
 import React from "react";
 import { NextPage } from "next";
 import dynamic from "next/dynamic";
-import { Header, Grid, Button, Icon } from "semantic-ui-react";
+import {
+    Header,
+    Grid,
+    Button,
+    Icon,
+    Dropdown,
+    DropdownProps,
+} from "semantic-ui-react";
 import { ICard } from "../interfaces/card";
 import { firebaseClient } from "../util/firebaseClient";
 import CardsTable from "../components/Cards/CardsTable";
 import Link from "next/link";
 const PreviewCard = dynamic(() => import("../components/Cards/PreviewCard"), {
-    ssr: false
+    ssr: false,
 });
 
 type CardsProps = {
@@ -16,44 +23,94 @@ type CardsProps = {
 
 enum DisplayTypes {
     table = "table",
-    block = "block"
+    block = "block",
+}
+
+const sortOptions = [
+    {
+        key: "Sort by Date (DESC)",
+        text: "Sort by Date (DESC)",
+        value: "DATE_DESC",
+    },
+    {
+        key: "Sort by Date (ASC)",
+        text: "Sort by Date (ASC)",
+        value: "DATE_ASC",
+    },
+];
+
+function sortCards(a: ICard, b: ICard, sortType: string): number {
+    if (sortType === "DATE_ASC") {
+        return a.createdDate.seconds - b.createdDate.seconds;
+    }
+    if (sortType === "DATE_DESC") {
+        return b.createdDate.seconds - a.createdDate.seconds;
+    }
+    return 0;
 }
 
 const CardsPage: NextPage<CardsProps> = ({ cards }) => {
     const [displayType, setDisplayType] = React.useState(DisplayTypes.block);
+    const [sortType, setSortType] = React.useState("DATE_DESC");
+
+    function handleChangeSort(e: React.SyntheticEvent, data: DropdownProps) {
+        if (typeof data.value !== "string") return;
+        setSortType(data.value);
+    }
+
+    const filteredCards = cards.sort((a, b) => sortCards(a, b, sortType));
+
     return (
         <>
-            <div style={{ float: "right" }}>
-                <Button.Group basic size="small" style={{ marginRight: "20px" }}>
-                    <Button
-                        icon="block layout"
-                        active={displayType === DisplayTypes.block}
-                        onClick={() => setDisplayType(DisplayTypes.block)}
+            <Grid>
+                <Grid.Column width={8}>
+                    <Header as="h1">Cards</Header>
+                </Grid.Column>
+                <Grid.Column width={8} textAlign="right">
+                    <Dropdown
+                        basic
+                        selection
+                        style={{ marginRight: "20px" }}
+                        options={sortOptions}
+                        defaultValue={sortOptions[0].value}
+                        onChange={handleChangeSort}
                     />
-                    <Button
-                        icon="table"
-                        active={displayType === DisplayTypes.table}
-                        onClick={() => setDisplayType(DisplayTypes.table)}
-                    />
-                </Button.Group>
-                <Link href="card/create">
-                    <Button
-                        floated="right"
-                        icon
-                        labelPosition="left"
-                        primary
+                    <Button.Group
+                        basic
                         size="small"
+                        style={{ marginRight: "20px" }}
                     >
-                        <Icon name="add square" />
-                        Create New
-                    </Button>
-                </Link>
-            </div>
-            <Header as="h1">Cards</Header>
-            {displayType === DisplayTypes.table && <CardsTable cards={cards} />}
+                        <Button
+                            icon="block layout"
+                            active={displayType === DisplayTypes.block}
+                            onClick={() => setDisplayType(DisplayTypes.block)}
+                        />
+                        <Button
+                            icon="table"
+                            active={displayType === DisplayTypes.table}
+                            onClick={() => setDisplayType(DisplayTypes.table)}
+                        />
+                    </Button.Group>
+                    <Link href="card/create">
+                        <Button
+                            floated="right"
+                            icon
+                            labelPosition="left"
+                            primary
+                            size="small"
+                        >
+                            <Icon name="add square" />
+                            Create New
+                        </Button>
+                    </Link>
+                </Grid.Column>
+            </Grid>
+            {displayType === DisplayTypes.table && (
+                <CardsTable cards={filteredCards} />
+            )}
             {displayType === DisplayTypes.block && (
                 <Grid columns="4" stackable>
-                    {cards.map((card, index) => (
+                    {filteredCards.map((card, index) => (
                         <Grid.Column key={index}>
                             <PreviewCard {...card} />
                         </Grid.Column>
@@ -64,7 +121,7 @@ const CardsPage: NextPage<CardsProps> = ({ cards }) => {
     );
 };
 
-CardsPage.getInitialProps = async function() {
+CardsPage.getInitialProps = async function () {
     const cards = await firebaseClient.getCards();
     return { cards };
 };
