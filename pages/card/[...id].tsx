@@ -9,7 +9,7 @@ import Link from "next/link";
 const CardPage: NextPage<ICard> = ({ ...card }) => {
     return (
         <>
-            <Link href="/cards">
+            <Link href="/">
                 <Button basic content="< Back" />
             </Link>
             <Header as="h1">Edit Card</Header>

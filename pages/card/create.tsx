@@ -22,7 +22,7 @@ const emptyCard: ICard = {
 const CreateCardPage: NextPage<ICard> = () => {
     return (
         <>
-            <Link href="/cards">
+            <Link href="/">
                 <Button basic content="< Back" />
             </Link>
             <Header as="h1">Create New Card</Header>

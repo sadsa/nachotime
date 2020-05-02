@@ -1,10 +1,11 @@
 import React from "react";
 import { NextPage } from "next";
 import dynamic from "next/dynamic";
-import { Header, Grid, Button } from "semantic-ui-react";
+import { Header, Grid, Button, Icon } from "semantic-ui-react";
 import { ICard } from "../interfaces/card";
 import { firebaseClient } from "../util/firebaseClient";
 import CardsTable from "../components/Cards/CardsTable";
+import Link from "next/link";
 const PreviewCard = dynamic(() => import("../components/Cards/PreviewCard"), {
     ssr: false
 });
@@ -23,7 +24,7 @@ const CardsPage: NextPage<CardsProps> = ({ cards }) => {
     return (
         <>
             <div style={{ float: "right" }}>
-                <Button.Group basic size="small">
+                <Button.Group basic size="small" style={{ marginRight: "20px" }}>
                     <Button
                         icon="block layout"
                         active={displayType === DisplayTypes.block}
@@ -35,11 +36,23 @@ const CardsPage: NextPage<CardsProps> = ({ cards }) => {
                         onClick={() => setDisplayType(DisplayTypes.table)}
                     />
                 </Button.Group>
+                <Link href="card/create">
+                    <Button
+                        floated="right"
+                        icon
+                        labelPosition="left"
+                        primary
+                        size="small"
+                    >
+                        <Icon name="add square" />
+                        Create New
+                    </Button>
+                </Link>
             </div>
             <Header as="h1">Cards</Header>
             {displayType === DisplayTypes.table && <CardsTable cards={cards} />}
             {displayType === DisplayTypes.block && (
-                <Grid columns="4" stackable >
+                <Grid columns="4" stackable>
                     {cards.map((card, index) => (
                         <Grid.Column key={index}>
                             <PreviewCard {...card} />

@@ -86,41 +86,6 @@ const CardsTable: React.FC<ICardsTableProps> = ({ cards }) => {
                         </Table.Row>
                     ))}
                 </Table.Body>
-
-                <Table.Footer fullWidth>
-                    <Table.Row>
-                        <Table.HeaderCell />
-                        <Table.HeaderCell colSpan="2">
-                            {selected?.length ? (
-                                <Button
-                                    icon
-                                    floated="left"
-                                    color="red"
-                                    labelPosition="left"
-                                    onClick={handleClickDelete}
-                                    size="small"
-                                >
-                                    <Icon name="trash" />
-                                    Delete
-                                </Button>
-                            ) : undefined}
-                        </Table.HeaderCell>
-                        <Table.HeaderCell colSpan="3">
-                            <Link href="card/create">
-                                <Button
-                                    floated="right"
-                                    icon
-                                    labelPosition="left"
-                                    primary
-                                    size="small"
-                                >
-                                    <Icon name="add square" />
-                                    Create New
-                                </Button>
-                            </Link>
-                        </Table.HeaderCell>
-                    </Table.Row>
-                </Table.Footer>
             </Table>
             <Confirm
                 open={showConfirm}
