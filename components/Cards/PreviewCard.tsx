@@ -34,7 +34,7 @@ const PreviewCard: React.FC<ISummaryCard> = ({
     }
 
     return (
-        <Card style={{ height: "100%" }}>
+        <Card style={{ height: "100%" }} fluid>
             <Card.Content>
                 <Card.Header>
                     <span style={{ display: "inline-block", width: "80%" }}>

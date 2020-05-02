@@ -39,7 +39,7 @@ const CardsPage: NextPage<CardsProps> = ({ cards }) => {
             <Header as="h1">Cards</Header>
             {displayType === DisplayTypes.table && <CardsTable cards={cards} />}
             {displayType === DisplayTypes.block && (
-                <Grid columns="4">
+                <Grid columns="4" stackable >
                     {cards.map((card, index) => (
                         <Grid.Column key={index}>
                             <PreviewCard {...card} />
