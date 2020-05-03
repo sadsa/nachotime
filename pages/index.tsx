@@ -8,7 +8,7 @@ import {
     Icon,
     Dropdown,
     DropdownProps,
-    Confirm
+    Modal
 } from "semantic-ui-react";
 import { ICard } from "../interfaces/card";
 import { firebaseClient } from "../util/cardsClient";
@@ -100,6 +100,7 @@ const CardsPage: NextPage<CardsProps> = ({ cards }) => {
                             basic
                             text="Actions"
                             style={{ marginRight: "20px" }}
+                            floating
                         >
                             <Dropdown.Menu>
                                 <Dropdown.Item
@@ -160,11 +161,33 @@ const CardsPage: NextPage<CardsProps> = ({ cards }) => {
                     ))}
                 </Grid>
             )}
-            <Confirm
+            <Modal
+                size="tiny"
                 open={showConfirm}
-                onCancel={() => setShowConfirm(false)}
-                onConfirm={() => onDeleteConfirm()}
-            />
+                onClose={() => setShowConfirm(false)}
+            >
+                <Modal.Header>
+                    Delete {selected.length > 1 ? "Cards" : "Card"}
+                </Modal.Header>
+                <Modal.Content>
+                    <p>
+                        Are you sure you want to delete{" "}
+                        {selected.length > 1 ? "these" : "this"} card
+                    </p>
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button negative onClick={() => setShowConfirm(false)}>
+                        No
+                    </Button>
+                    <Button
+                        positive
+                        icon="checkmark"
+                        labelPosition="right"
+                        content="Yes"
+                        onClick={() => onDeleteConfirm()}
+                    />
+                </Modal.Actions>
+            </Modal>
         </>
     );
 };
