@@ -17,7 +17,7 @@ const CardViewPage: NextPage<ICard> = (card) => {
 CardViewPage.getInitialProps = async function (
     context: NextPageContext
 ): Promise<ICard> {
-    const slug = context.query.id[0];
+    const slug = context?.query?.id ? context.query.id[0] : "";
     const card = await firebaseClient.getCard(slug);
     return { ...card };
 };

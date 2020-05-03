@@ -1,9 +1,7 @@
 import React from "react";
-import { Button, Checkbox, Icon, Table, Confirm } from "semantic-ui-react";
+import { Button, Checkbox, Icon, Table } from "semantic-ui-react";
 import { ICard } from "../../interfaces/card";
 import Link from "next/link";
-import { firebaseClient } from "../../util/cardsClient";
-import { useRouter } from "next/router";
 
 type CardTableFields = "title" | "phrase" | "translation";
 
@@ -12,36 +10,19 @@ type CardTableHeaders = Record<CardTableFields, string>;
 const columns: CardTableHeaders = {
     title: "Title",
     phrase: "Phrase",
-    translation: "Translation",
+    translation: "Translation"
 };
 
 interface ICardsTableProps {
     cards: ICard[];
+    onSelect?(cardId: string): void;
 }
 
-const CardsTable: React.FC<ICardsTableProps> = ({ cards }) => {
-    const [showConfirm, setShowConfirm] = React.useState(false);
-    const [selected, setSelected] = React.useState<string[]>([]);
-    const { reload } = useRouter();
-    const handleCheck = (cardId: string) => {
-        const selectedIds = Object.assign([], selected);
-        const index = selectedIds.indexOf(cardId);
-        if (index >= 0) {
-            selectedIds.splice(index, 1);
-        } else {
-            selectedIds.push(cardId);
+const CardsTable: React.FC<ICardsTableProps> = ({ cards, onSelect }) => {
+    const handleSelect = (cardId: string) => {
+        if (onSelect) {
+            onSelect(cardId);
         }
-        setSelected(selectedIds);
-    };
-    const handleClickDelete = () => {
-        setShowConfirm(true);
-    };
-    const onDeleteConfirm = () => {
-        Promise.all(selected.map((id) => firebaseClient.deleteCard(id))).then(
-            () => {
-                reload();
-            }
-        );
     };
     return (
         <>
@@ -54,18 +35,7 @@ const CardsTable: React.FC<ICardsTableProps> = ({ cards }) => {
                                 {columns[key as CardTableFields]}
                             </Table.HeaderCell>
                         ))}
-                        <Table.HeaderCell>
-                            {selected?.length ? (
-                                <Button
-                                    icon
-                                    floated="right"
-                                    color="red"
-                                    onClick={handleClickDelete}
-                                >
-                                    <Icon name="trash" />
-                                </Button>
-                            ) : undefined}
-                        </Table.HeaderCell>
+                        <Table.HeaderCell />
                     </Table.Row>
                 </Table.Header>
 
@@ -74,7 +44,7 @@ const CardsTable: React.FC<ICardsTableProps> = ({ cards }) => {
                         <Table.Row key={index}>
                             <Table.Cell collapsing>
                                 <Checkbox
-                                    onChange={() => handleCheck(card.id)}
+                                    onChange={() => handleSelect(card.id)}
                                 />
                             </Table.Cell>
                             {Object.keys(columns).map((key, index) => {
@@ -85,13 +55,15 @@ const CardsTable: React.FC<ICardsTableProps> = ({ cards }) => {
                             })}
                             <Table.Cell collapsing>
                                 <Link href={`card/${card.id}`}>
-                                    <Button icon>
+                                    <Button>
                                         <Icon name="edit" />
+                                        Edit
                                     </Button>
                                 </Link>
                                 <Link href={`card/view/${card.id}`}>
-                                    <Button icon>
+                                    <Button>
                                         <Icon name="eye" />
+                                        Review
                                     </Button>
                                 </Link>
                             </Table.Cell>
@@ -99,11 +71,6 @@ const CardsTable: React.FC<ICardsTableProps> = ({ cards }) => {
                     ))}
                 </Table.Body>
             </Table>
-            <Confirm
-                open={showConfirm}
-                onCancel={() => setShowConfirm(false)}
-                onConfirm={() => onDeleteConfirm()}
-            />
         </>
     );
 };

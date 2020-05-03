@@ -54,7 +54,7 @@ const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
         setStatus(StatusEnum.pending);
         createOrUpdateCard({ ...card, ...data })
             .then(() => {
-                router.push("/cards");
+                router.push("/");
                 setStatus(StatusEnum.resolved);
             })
             .catch(() => setStatus(StatusEnum.rejected));

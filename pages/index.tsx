@@ -8,13 +8,15 @@ import {
     Icon,
     Dropdown,
     DropdownProps,
+    Confirm
 } from "semantic-ui-react";
 import { ICard } from "../interfaces/card";
 import { firebaseClient } from "../util/cardsClient";
 import CardsTable from "../components/Cards/CardsTable";
 import Link from "next/link";
+import { useRouter } from "next/router";
 const PreviewCard = dynamic(() => import("../components/Cards/PreviewCard"), {
-    ssr: false,
+    ssr: false
 });
 
 type CardsProps = {
@@ -23,20 +25,20 @@ type CardsProps = {
 
 enum DisplayTypes {
     table = "table",
-    block = "block",
+    block = "block"
 }
 
 const sortOptions = [
     {
         key: "Sort by Date (DESC)",
         text: "Sort by Date (DESC)",
-        value: "DATE_DESC",
+        value: "DATE_DESC"
     },
     {
         key: "Sort by Date (ASC)",
         text: "Sort by Date (ASC)",
-        value: "DATE_ASC",
-    },
+        value: "DATE_ASC"
+    }
 ];
 
 function sortCards(a: ICard, b: ICard, sortType: string): number {
@@ -51,22 +53,65 @@ function sortCards(a: ICard, b: ICard, sortType: string): number {
 
 const CardsPage: NextPage<CardsProps> = ({ cards }) => {
     const [displayType, setDisplayType] = React.useState(DisplayTypes.block);
+    const [showConfirm, setShowConfirm] = React.useState(false);
     const [sortType, setSortType] = React.useState("DATE_DESC");
+    const [selected, setSelected] = React.useState<string[]>([]);
+    const { reload } = useRouter();
 
     function handleChangeSort(e: React.SyntheticEvent, data: DropdownProps) {
         if (typeof data.value !== "string") return;
         setSortType(data.value);
     }
 
+    const handleCheck = (cardId: string) => {
+        const selectedIds = Object.assign([], selected);
+        const index = selectedIds.indexOf(cardId);
+        if (index >= 0) {
+            selectedIds.splice(index, 1);
+        } else {
+            selectedIds.push(cardId);
+        }
+        setSelected(selectedIds);
+    };
+
+    const handleClickDelete = () => {
+        setShowConfirm(true);
+    };
+
+    const onDeleteConfirm = () => {
+        Promise.all(selected.map(id => firebaseClient.deleteCard(id))).then(
+            () => {
+                reload();
+            }
+        );
+    };
+
     const filteredCards = cards.sort((a, b) => sortCards(a, b, sortType));
 
     return (
         <>
             <Grid>
-                <Grid.Column width={8}>
+                <Grid.Column width={8} verticalAlign="middle">
                     <Header as="h1">Cards</Header>
                 </Grid.Column>
                 <Grid.Column width={8} textAlign="right">
+                    {selected?.length ? (
+                        <Dropdown
+                            basic
+                            text="Actions"
+                            style={{ marginRight: "20px" }}
+                        >
+                            <Dropdown.Menu>
+                                <Dropdown.Item
+                                    icon="trash"
+                                    text="Delete Selected"
+                                    onClick={handleClickDelete}
+                                />
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    ) : (
+                        undefined
+                    )}
                     <Dropdown
                         basic
                         selection
@@ -92,36 +137,39 @@ const CardsPage: NextPage<CardsProps> = ({ cards }) => {
                         />
                     </Button.Group>
                     <Link href="card/create">
-                        <Button
-                            floated="right"
-                            icon
-                            labelPosition="left"
-                            primary
-                            size="small"
-                        >
-                            <Icon name="add square" />
+                        <Button primary>
+                            <Icon name="edit" />
                             Create New
                         </Button>
                     </Link>
                 </Grid.Column>
             </Grid>
             {displayType === DisplayTypes.table && (
-                <CardsTable cards={filteredCards} />
+                <CardsTable cards={filteredCards} onSelect={handleCheck} />
             )}
             {displayType === DisplayTypes.block && (
                 <Grid columns="4" stackable>
                     {filteredCards.map((card, index) => (
                         <Grid.Column key={index}>
-                            <PreviewCard {...card} />
+                            <PreviewCard
+                                card={card}
+                                onSelect={handleCheck}
+                                selected={selected.indexOf(card.id) >= 0}
+                            />
                         </Grid.Column>
                     ))}
                 </Grid>
             )}
+            <Confirm
+                open={showConfirm}
+                onCancel={() => setShowConfirm(false)}
+                onConfirm={() => onDeleteConfirm()}
+            />
         </>
     );
 };
 
-CardsPage.getInitialProps = async function () {
+CardsPage.getInitialProps = async function() {
     const cards = await firebaseClient.getCards();
     return { cards };
 };
