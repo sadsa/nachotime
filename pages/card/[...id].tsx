@@ -2,7 +2,7 @@ import React from "react";
 import CardDetailForm from "../../components/Cards/CardDetailForm";
 import { Header, Button } from "semantic-ui-react";
 import { NextPage, NextPageContext } from "next";
-import { firebaseClient } from "../../util/firebaseClient";
+import { firebaseClient } from "../../util/cardsClient";
 import { ICard } from "../../interfaces/card";
 import Link from "next/link";
 

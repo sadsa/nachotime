@@ -10,7 +10,7 @@ import {
     DropdownProps,
 } from "semantic-ui-react";
 import { ICard } from "../interfaces/card";
-import { firebaseClient } from "../util/firebaseClient";
+import { firebaseClient } from "../util/cardsClient";
 import CardsTable from "../components/Cards/CardsTable";
 import Link from "next/link";
 const PreviewCard = dynamic(() => import("../components/Cards/PreviewCard"), {

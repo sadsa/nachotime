@@ -1,7 +1,8 @@
 import React from "react";
-import CardDetailForm from "../../components/Cards/CardDetailForm";
-import { Header, Button } from "semantic-ui-react";
 import { NextPage } from "next";
+import { Header, Button } from "semantic-ui-react";
+import CardDetailForm from "../../components/Cards/CardDetailForm";
+import firebase from "../../firebase/clientApp";
 import { ICard } from "../../interfaces/card";
 import Link from "next/link";
 
@@ -17,6 +18,7 @@ const emptyCard: ICard = {
             translation: "",
         },
     ],
+    createdDate: firebase.firestore.Timestamp.now()
 };
 
 const CreateCardPage: NextPage<ICard> = () => {

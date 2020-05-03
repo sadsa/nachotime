@@ -4,7 +4,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { ICard } from "../../interfaces/card";
 import dynamic from "next/dynamic";
 import * as yup from "yup";
-import { firebaseClient } from "../../util/firebaseClient";
+import { firebaseClient } from "../../util/cardsClient";
 import { useRouter } from "next/router";
 
 const AudioRecordField = dynamic(() => import("../common/AudioRecordField"), {

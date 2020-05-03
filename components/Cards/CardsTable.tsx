@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Checkbox, Icon, Table, Confirm } from "semantic-ui-react";
 import { ICard } from "../../interfaces/card";
 import Link from "next/link";
-import { firebaseClient } from "../../util/firebaseClient";
+import { firebaseClient } from "../../util/cardsClient";
 import { useRouter } from "next/router";
 
 type CardTableFields = "title" | "phrase" | "translation";

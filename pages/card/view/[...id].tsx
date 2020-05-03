@@ -3,7 +3,7 @@ import { NextPage, NextPageContext } from "next";
 import { Header } from "semantic-ui-react";
 import { ICard } from "../../../interfaces/card";
 import ReviewCard from "../../../components/Cards/ReviewCard";
-import { firebaseClient } from "../../../util/firebaseClient";
+import { firebaseClient } from "../../../util/cardsClient";
 
 const CardViewPage: NextPage<ICard> = (card) => {
     return (
