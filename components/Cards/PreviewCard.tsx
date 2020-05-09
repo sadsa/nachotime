@@ -1,11 +1,11 @@
 import React from "react";
 import styled from "styled-components";
-import { Card, Button, Icon } from "semantic-ui-react";
+import { Card, Button, Icon, CardProps } from "semantic-ui-react";
 import { ICard } from "../../interfaces/card";
 import { formatShortDate } from "../../util/dateUtils";
 import Link from "next/link";
 
-interface IProps {
+interface IProps extends CardProps {
     card: ICard;
     selected?: boolean;
     inverted?: boolean;
@@ -52,7 +52,13 @@ function usePreviewCard(playbackAudioUrl: string) {
     return { playing, revealActions, hideActions, play, stop, hasActions };
 }
 
-const PreviewCard: React.FC<IProps> = ({ card, selected, onSelect }) => {
+const PreviewCard: React.FC<IProps> = ({
+    card,
+    selected,
+    onSelect,
+    inverted,
+    ...cardProps
+}) => {
     const { id, title, createdDate, phrase, playbackAudioUrl } = card;
     const {
         playing,
@@ -83,6 +89,8 @@ const PreviewCard: React.FC<IProps> = ({ card, selected, onSelect }) => {
             onMouseEnter={() => revealActions()}
             onMouseLeave={() => hideActions()}
             raised={selected}
+            inverted={inverted}
+            {...cardProps}
         >
             <Card.Content>
                 <Card.Header>
@@ -130,13 +138,15 @@ const PreviewCard: React.FC<IProps> = ({ card, selected, onSelect }) => {
 };
 
 const StyledCard = styled(Card)`
-    height: "100%";
-    position: relative;
-    ${({ inverted }) =>
-        inverted &&
-        `
-        background-color: black;
+    &.ui {
+        height: 100%;
+        position: relative;
+        ${({ inverted, theme }) =>
+            inverted &&
+            `
+        box-shadow: none;
     `}
+    }
 `;
 
 const StyledCardTitle = styled.span`

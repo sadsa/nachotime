@@ -33,24 +33,24 @@ const lightTheme = {
     body: "#FFF",
     text: "#363537",
     toggleBorder: "#FFF",
-    background: "#363537",
+    background: "#ffffff",
 };
 
 const darkTheme = {
     body: "#363537",
     text: "#FAFAFA",
     toggleBorder: "#6B8096",
-    background: "#999",
+    background: "#1b1c1d",
 };
 
-const GlobalStyles = createGlobalStyle`
-    .light-mode {
-        background-color: ${({ theme }) => (theme as any).body};
+const GlobalStyles = createGlobalStyle<any>`
+    body.light-mode {
+        background-color: ${({ theme }) => theme.background};
         color: #333;
-        transition: background-color 0.3s ease;
+        transition: background-color 1s ease;
     }
-    .dark-mode {
-        background-color: #1a1919;
+    body.dark-mode {
+        background-color: ${({ theme }) => theme.background};
         color: #999;
     }
 `;
@@ -64,9 +64,8 @@ const StyledThemeToggle = styled(Checkbox)`
 `;
 
 const StyledMenu = styled(Menu)`
-    transition: background 0.3s ease;
-    &.inverted {
-        transition: background 0.3s ease;
+    &.ui.menu {
+        background: transparent;
     }
 `;
 

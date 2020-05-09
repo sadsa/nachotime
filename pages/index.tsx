@@ -169,6 +169,7 @@ const CardsPage: NextPage<CardsProps> = ({ cards }) => {
                                         <PreviewCard
                                             card={card}
                                             onSelect={handleCheck}
+                                            inverted={darkMode.value}
                                             selected={
                                                 selected.indexOf(card.id) >= 0
                                             }
