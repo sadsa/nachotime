@@ -90,7 +90,7 @@ const CardsPage: NextPage<CardsProps> = ({ cards }) => {
 
     return (
         <>
-            <Grid>
+            <Grid stackable>
                 <Grid.Row>
                     <Grid.Column width={8} verticalAlign="middle">
                         <Header as="h1">

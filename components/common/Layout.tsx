@@ -2,6 +2,7 @@ import React from "react";
 import { Container, Image, Menu, Checkbox, Icon } from "semantic-ui-react";
 import styled from "styled-components";
 import { useRouter } from "next/router";
+import Link from "next/link";
 
 const Layout: React.FC<any> = (props) => {
     const { query } = useRouter();
@@ -10,17 +11,19 @@ const Layout: React.FC<any> = (props) => {
         <>
             <StyledMenu borderless>
                 <Container>
-                    <Menu.Item header>
-                        <StyledLogo size="mini" src="/images/logo.png" />
-                        Nachotime!
-                    </Menu.Item>
+                    <Link href="/">
+                        <Menu.Item header>
+                            <StyledLogo size="mini" src="/images/logo.png" />
+                            Nachotime!
+                        </Menu.Item>
+                    </Link>
                     {darkMode ? (
                         <Menu.Item position="right" href="/">
                             <Icon name="sun outline" />
                             Light Mode
                         </Menu.Item>
                     ) : (
-                        <Menu.Item position="right" href="/?darkMode=true">
+                        <Menu.Item position="right" href="?darkMode=true">
                             <Icon name="moon" />
                             Dark Mode
                         </Menu.Item>
