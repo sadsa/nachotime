@@ -1,5 +1,5 @@
 import React from "react";
-import { Button, Checkbox, Icon, Table } from "semantic-ui-react";
+import { Button, Checkbox, Icon, Table, TableProps } from "semantic-ui-react";
 import { ICard } from "../../interfaces/card";
 import Link from "next/link";
 
@@ -10,15 +10,19 @@ type CardTableHeaders = Record<CardTableFields, string>;
 const columns: CardTableHeaders = {
     title: "Title",
     phrase: "Phrase",
-    translation: "Translation"
+    translation: "Translation",
 };
 
-interface ICardsTableProps {
+interface ICardsTableProps extends TableProps {
     cards: ICard[];
     onSelect?(cardId: string): void;
 }
 
-const CardsTable: React.FC<ICardsTableProps> = ({ cards, onSelect }) => {
+const CardsTable: React.FC<ICardsTableProps> = ({
+    cards,
+    onSelect,
+    ...tableProps
+}) => {
     const handleSelect = (cardId: string) => {
         if (onSelect) {
             onSelect(cardId);
@@ -26,7 +30,7 @@ const CardsTable: React.FC<ICardsTableProps> = ({ cards, onSelect }) => {
     };
     return (
         <>
-            <Table celled compact definition>
+            <Table celled compact definition {...tableProps}>
                 <Table.Header fullWidth>
                     <Table.Row>
                         <Table.HeaderCell />

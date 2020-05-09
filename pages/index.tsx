@@ -8,17 +8,16 @@ import {
     Icon,
     Dropdown,
     DropdownProps,
-    Modal
+    Modal,
 } from "semantic-ui-react";
 import { ICard } from "../interfaces/card";
 import { firebaseClient } from "../util/cardsClient";
 import CardsTable from "../components/Cards/CardsTable";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useTheme } from "styled-components";
 import useDarkMode from "use-dark-mode";
 const PreviewCard = dynamic(() => import("../components/Cards/PreviewCard"), {
-    ssr: false
+    ssr: false,
 });
 
 type CardsProps = {
@@ -27,20 +26,20 @@ type CardsProps = {
 
 enum DisplayTypes {
     table = "table",
-    block = "block"
+    block = "block",
 }
 
 const sortOptions = [
     {
         key: "Sort by Date (DESC)",
         text: "Sort by Date (DESC)",
-        value: "DATE_DESC"
+        value: "DATE_DESC",
     },
     {
         key: "Sort by Date (ASC)",
         text: "Sort by Date (ASC)",
-        value: "DATE_ASC"
-    }
+        value: "DATE_ASC",
+    },
 ];
 
 function sortCards(a: ICard, b: ICard, sortType: string): number {
@@ -58,7 +57,7 @@ const CardsPage: NextPage<CardsProps> = ({ cards }) => {
     const [showConfirm, setShowConfirm] = React.useState(false);
     const [sortType, setSortType] = React.useState("DATE_DESC");
     const [selected, setSelected] = React.useState<string[]>([]);
-    const darkMode = useDarkMode();
+    const darkMode = useDarkMode(true);
     const { reload } = useRouter();
 
     function handleChangeSort(e: React.SyntheticEvent, data: DropdownProps) {
@@ -82,7 +81,7 @@ const CardsPage: NextPage<CardsProps> = ({ cards }) => {
     };
 
     const onDeleteConfirm = () => {
-        Promise.all(selected.map(id => firebaseClient.deleteCard(id))).then(
+        Promise.all(selected.map((id) => firebaseClient.deleteCard(id))).then(
             () => {
                 reload();
             }
@@ -94,76 +93,93 @@ const CardsPage: NextPage<CardsProps> = ({ cards }) => {
     return (
         <>
             <Grid>
-                <Grid.Column width={8} verticalAlign="middle">
-                    <Header as="h1" inverted={darkMode.value}>Cards</Header>
-                </Grid.Column>
-                <Grid.Column width={8} textAlign="right">
-                    {selected?.length ? (
+                <Grid.Row>
+                    <Grid.Column width={8} verticalAlign="middle">
+                        <Header as="h1" inverted={darkMode.value}>
+                            Cards
+                        </Header>
+                    </Grid.Column>
+                    <Grid.Column width={8} textAlign="right">
+                        {selected?.length ? (
+                            <Dropdown
+                                basic
+                                text="Actions"
+                                style={{ marginRight: "1rem" }}
+                                floating
+                            >
+                                <Dropdown.Menu>
+                                    <Dropdown.Item
+                                        icon="trash"
+                                        text="Delete Selected"
+                                        onClick={handleClickDelete}
+                                    />
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        ) : undefined}
                         <Dropdown
                             basic
-                            text="Actions"
-                            style={{ marginRight: "20px" }}
-                            floating
+                            selection
+                            style={{ marginRight: "1rem" }}
+                            options={sortOptions}
+                            defaultValue={sortOptions[0].value}
+                            onChange={handleChangeSort}
+                        />
+                        <Button.Group
+                            basic
+                            size="small"
+                            style={{ marginRight: "1rem" }}
+                            inverted={darkMode.value}
                         >
-                            <Dropdown.Menu>
-                                <Dropdown.Item
-                                    icon="trash"
-                                    text="Delete Selected"
-                                    onClick={handleClickDelete}
-                                />
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    ) : (
-                        undefined
-                    )}
-                    <Dropdown
-                        basic
-                        selection
-                        style={{ marginRight: "20px" }}
-                        options={sortOptions}
-                        defaultValue={sortOptions[0].value}
-                        onChange={handleChangeSort}
-                    />
-                    <Button.Group
-                        basic
-                        size="small"
-                        style={{ marginRight: "20px" }}
-                    >
-                        <Button
-                            icon="block layout"
-                            active={displayType === DisplayTypes.block}
-                            onClick={() => setDisplayType(DisplayTypes.block)}
-                        />
-                        <Button
-                            icon="table"
-                            active={displayType === DisplayTypes.table}
-                            onClick={() => setDisplayType(DisplayTypes.table)}
-                        />
-                    </Button.Group>
-                    <Link href="card/create">
-                        <Button primary>
-                            <Icon name="edit" />
-                            Create New
-                        </Button>
-                    </Link>
-                </Grid.Column>
-            </Grid>
-            {displayType === DisplayTypes.table && (
-                <CardsTable cards={filteredCards} onSelect={handleCheck} />
-            )}
-            {displayType === DisplayTypes.block && (
-                <Grid columns="4" stackable>
-                    {filteredCards.map((card, index) => (
-                        <Grid.Column key={index}>
-                            <PreviewCard
-                                card={card}
-                                onSelect={handleCheck}
-                                selected={selected.indexOf(card.id) >= 0}
+                            <Button
+                                icon="block layout"
+                                active={displayType === DisplayTypes.block}
+                                onClick={() =>
+                                    setDisplayType(DisplayTypes.block)
+                                }
                             />
-                        </Grid.Column>
-                    ))}
-                </Grid>
-            )}
+                            <Button
+                                icon="table"
+                                active={displayType === DisplayTypes.table}
+                                onClick={() =>
+                                    setDisplayType(DisplayTypes.table)
+                                }
+                            />
+                        </Button.Group>
+                        <Link href="card/create">
+                            <Button primary>
+                                <Icon name="edit" />
+                                Create New
+                            </Button>
+                        </Link>
+                    </Grid.Column>
+                </Grid.Row>
+                <Grid.Row>
+                    <Grid.Column>
+                        {displayType === DisplayTypes.table && (
+                            <CardsTable
+                                cards={filteredCards}
+                                onSelect={handleCheck}
+                                inverted={darkMode.value}
+                            />
+                        )}
+                        {displayType === DisplayTypes.block && (
+                            <Grid columns="4" stackable>
+                                {filteredCards.map((card, index) => (
+                                    <Grid.Column key={index}>
+                                        <PreviewCard
+                                            card={card}
+                                            onSelect={handleCheck}
+                                            selected={
+                                                selected.indexOf(card.id) >= 0
+                                            }
+                                        />
+                                    </Grid.Column>
+                                ))}
+                            </Grid>
+                        )}
+                    </Grid.Column>
+                </Grid.Row>
+            </Grid>
             <Modal
                 size="tiny"
                 open={showConfirm}
@@ -195,7 +211,7 @@ const CardsPage: NextPage<CardsProps> = ({ cards }) => {
     );
 };
 
-CardsPage.getInitialProps = async function() {
+CardsPage.getInitialProps = async function () {
     const cards = await firebaseClient.getCards();
     return { cards };
 };

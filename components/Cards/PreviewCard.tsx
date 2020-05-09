@@ -8,6 +8,7 @@ import Link from "next/link";
 interface IProps {
     card: ICard;
     selected?: boolean;
+    inverted?: boolean;
     onSelect?(cardId: string): void;
 }
 
@@ -15,36 +16,36 @@ function usePreviewCard(playbackAudioUrl: string) {
     const [{ playing, track, hasActions }, setState] = React.useState({
         playing: false,
         track: new Audio(playbackAudioUrl),
-        hasActions: false
+        hasActions: false,
     });
 
     function play() {
         track.play();
         track.addEventListener("playing", () => {
-            setState(prevState => ({ ...prevState, playing: true }));
+            setState((prevState) => ({ ...prevState, playing: true }));
         });
         track.addEventListener("ended", () => {
-            setState(prevState => ({ ...prevState, playing: false }));
+            setState((prevState) => ({ ...prevState, playing: false }));
         });
     }
 
     function stop() {
         track.pause();
         track.currentTime = 0;
-        setState(prevState => ({ ...prevState, playing: false }));
+        setState((prevState) => ({ ...prevState, playing: false }));
     }
 
     function revealActions() {
-        setState(prevState => ({
+        setState((prevState) => ({
             ...prevState,
-            hasActions: true
+            hasActions: true,
         }));
     }
 
     function hideActions() {
-        setState(prevState => ({
+        setState((prevState) => ({
             ...prevState,
-            hasActions: false
+            hasActions: false,
         }));
     }
 
@@ -59,7 +60,7 @@ const PreviewCard: React.FC<IProps> = ({ card, selected, onSelect }) => {
         stop,
         revealActions,
         hideActions,
-        hasActions
+        hasActions,
     } = usePreviewCard(playbackAudioUrl);
 
     const handlePlayAudio = () => {
@@ -85,9 +86,7 @@ const PreviewCard: React.FC<IProps> = ({ card, selected, onSelect }) => {
         >
             <Card.Content>
                 <Card.Header>
-                    <span style={{ display: "inline-block", width: "80%" }}>
-                        {title}
-                    </span>
+                    <StyledCardTitle>{title}</StyledCardTitle>
                     <Button
                         icon={!playing ? "volume up" : "stop"}
                         color="teal"
@@ -116,18 +115,15 @@ const PreviewCard: React.FC<IProps> = ({ card, selected, onSelect }) => {
                     </Link>
                 </div>
                 {hasActions || selected ? (
-                    <Button
+                    <StyledCardSelectButton
                         circular
                         basic={selected ? undefined : true}
                         color={selected ? "yellow" : undefined}
                         icon="check"
                         size="tiny"
-                        className="select-button"
                         onClick={handleSelect}
                     />
-                ) : (
-                    undefined
-                )}
+                ) : undefined}
             </Card.Content>
         </StyledCard>
     );
@@ -136,12 +132,23 @@ const PreviewCard: React.FC<IProps> = ({ card, selected, onSelect }) => {
 const StyledCard = styled(Card)`
     height: "100%";
     position: relative;
-    .select-button {
-        position: absolute;
-        top: 0;
-        left: 0;
-        transform: translate(-50%, -50%);
-    }
+    ${({ inverted }) =>
+        inverted &&
+        `
+        background-color: black;
+    `}
+`;
+
+const StyledCardTitle = styled.span`
+    display: inline-block;
+    width: 80%;
+`;
+
+const StyledCardSelectButton = styled(Button)`
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(-50%, -50%);
 `;
 
 export default PreviewCard;
