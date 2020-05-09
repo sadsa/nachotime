@@ -8,7 +8,6 @@ import Link from "next/link";
 interface IProps extends CardProps {
     card: ICard;
     selected?: boolean;
-    inverted?: boolean;
     onSelect?(cardId: string): void;
 }
 
@@ -56,7 +55,6 @@ const PreviewCard: React.FC<IProps> = ({
     card,
     selected,
     onSelect,
-    inverted,
     ...cardProps
 }) => {
     const { id, title, createdDate, phrase, playbackAudioUrl } = card;
@@ -89,7 +87,6 @@ const PreviewCard: React.FC<IProps> = ({
             onMouseEnter={() => revealActions()}
             onMouseLeave={() => hideActions()}
             raised={selected}
-            inverted={inverted}
             {...cardProps}
         >
             <Card.Content>
@@ -141,11 +138,6 @@ const StyledCard = styled(Card)`
     &.ui {
         height: 100%;
         position: relative;
-        ${({ inverted, theme }) =>
-            inverted &&
-            `
-        box-shadow: none;
-    `}
     }
 `;
 

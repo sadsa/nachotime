@@ -15,7 +15,6 @@ import { firebaseClient } from "../util/cardsClient";
 import CardsTable from "../components/Cards/CardsTable";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import useDarkMode from "use-dark-mode";
 const PreviewCard = dynamic(() => import("../components/Cards/PreviewCard"), {
     ssr: false,
 });
@@ -57,7 +56,6 @@ const CardsPage: NextPage<CardsProps> = ({ cards }) => {
     const [showConfirm, setShowConfirm] = React.useState(false);
     const [sortType, setSortType] = React.useState("DATE_DESC");
     const [selected, setSelected] = React.useState<string[]>([]);
-    const darkMode = useDarkMode(true);
     const { reload } = useRouter();
 
     function handleChangeSort(e: React.SyntheticEvent, data: DropdownProps) {
@@ -95,7 +93,7 @@ const CardsPage: NextPage<CardsProps> = ({ cards }) => {
             <Grid>
                 <Grid.Row>
                     <Grid.Column width={8} verticalAlign="middle">
-                        <Header as="h1" inverted={darkMode.value}>
+                        <Header as="h1">
                             Cards
                         </Header>
                     </Grid.Column>
@@ -128,7 +126,6 @@ const CardsPage: NextPage<CardsProps> = ({ cards }) => {
                             basic
                             size="small"
                             style={{ marginRight: "1rem" }}
-                            inverted={darkMode.value}
                         >
                             <Button
                                 icon="block layout"
@@ -159,7 +156,6 @@ const CardsPage: NextPage<CardsProps> = ({ cards }) => {
                             <CardsTable
                                 cards={filteredCards}
                                 onSelect={handleCheck}
-                                inverted={darkMode.value}
                             />
                         )}
                         {displayType === DisplayTypes.block && (
@@ -169,7 +165,6 @@ const CardsPage: NextPage<CardsProps> = ({ cards }) => {
                                         <PreviewCard
                                             card={card}
                                             onSelect={handleCheck}
-                                            inverted={darkMode.value}
                                             selected={
                                                 selected.indexOf(card.id) >= 0
                                             }
