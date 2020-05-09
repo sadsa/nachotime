@@ -1,94 +1,68 @@
 import React from "react";
-import {
-    Container,
-    Divider,
-    Grid,
-    Header,
-    Image,
-    List,
-    Menu,
-    Segment
-} from "semantic-ui-react";
+import { Container, Image, Menu, Checkbox } from "semantic-ui-react";
+import useDarkMode from "use-dark-mode";
+import { createGlobalStyle, ThemeProvider } from "styled-components";
 
-const Layout: React.FC<any> = props => (
-    <div>
-        <Menu borderless>
-            <Container>
-                <Menu.Item header>
-                    <Image
-                        size="mini"
-                        src="/images/logo.png"
-                        style={{ marginRight: "1.5em" }}
-                    />
-                    Nachotime!
-                </Menu.Item>
-            </Container>
-        </Menu>
+const Layout: React.FC<any> = props => {
+    const darkMode = useDarkMode(true);
+    return (
+        <ThemeProvider theme={darkMode.value ? darkTheme : lightTheme}>
+            <GlobalStyles />
+            <Menu borderless inverted={darkMode.value}>
+                <Container>
+                    <Menu.Item header>
+                        <Image
+                            size="mini"
+                            src="/images/logo.png"
+                            style={{ marginRight: "1.5em" }}
+                        />
+                        Nachotime!
+                    </Menu.Item>
+                    <Menu.Item position="right">
+                        <Checkbox
+                            toggle
+                            onChange={darkMode.toggle}
+                            className="theme-toggle"
+                        />
+                    </Menu.Item>
+                </Container>
+            </Menu>
 
-        <Container>{props.children}</Container>
+            <Container style={{ padding: "1em 0" }}>{props.children}</Container>
+        </ThemeProvider>
+    );
+};
 
-        <Segment
-            inverted
-            vertical
-            style={{ margin: "5em 0em 0em", padding: "5em 0em" }}
-        >
-            <Container textAlign="center">
-                <Grid divided inverted stackable>
-                    <Grid.Column width={3}>
-                        <Header inverted as="h4" content="Group 1" />
-                        <List link inverted>
-                            <List.Item as="a">Link One</List.Item>
-                            <List.Item as="a">Link Two</List.Item>
-                            <List.Item as="a">Link Three</List.Item>
-                            <List.Item as="a">Link Four</List.Item>
-                        </List>
-                    </Grid.Column>
-                    <Grid.Column width={3}>
-                        <Header inverted as="h4" content="Group 2" />
-                        <List link inverted>
-                            <List.Item as="a">Link One</List.Item>
-                            <List.Item as="a">Link Two</List.Item>
-                            <List.Item as="a">Link Three</List.Item>
-                            <List.Item as="a">Link Four</List.Item>
-                        </List>
-                    </Grid.Column>
-                    <Grid.Column width={3}>
-                        <Header inverted as="h4" content="Group 3" />
-                        <List link inverted>
-                            <List.Item as="a">Link One</List.Item>
-                            <List.Item as="a">Link Two</List.Item>
-                            <List.Item as="a">Link Three</List.Item>
-                            <List.Item as="a">Link Four</List.Item>
-                        </List>
-                    </Grid.Column>
-                    <Grid.Column width={7}>
-                        <Header inverted as="h4" content="Footer Header" />
-                        <p>
-                            Extra space for a call to action inside the footer
-                            that could help re-engage users.
-                        </p>
-                    </Grid.Column>
-                </Grid>
+const lightTheme = {
+    body: "#FFF",
+    text: "#363537",
+    toggleBorder: "#FFF",
+    background: "#363537"
+};
 
-                <Divider inverted section />
-                <Image centered size="mini" src="/images/logo.png" />
-                <List horizontal inverted divided link size="small">
-                    <List.Item as="a" href="#">
-                        Site Map
-                    </List.Item>
-                    <List.Item as="a" href="#">
-                        Contact Us
-                    </List.Item>
-                    <List.Item as="a" href="#">
-                        Terms and Conditions
-                    </List.Item>
-                    <List.Item as="a" href="#">
-                        Privacy Policy
-                    </List.Item>
-                </List>
-            </Container>
-        </Segment>
-    </div>
-);
+const darkTheme = {
+    body: "#363537",
+    text: "#FAFAFA",
+    toggleBorder: "#6B8096",
+    background: "#999"
+};
+
+const GlobalStyles = createGlobalStyle`
+    body.light-mode {
+    background-color: ${({ theme }) => (theme as any).body};
+    color: #333;
+    transition: background-color 0.3s ease;
+    &.theme-toggle {
+        
+    }
+    }
+    body.dark-mode {
+    background-color: #1a1919;
+    color: #999;
+    &.theme-toggle {
+
+    }
+    }
+`;
 
 export default Layout;
