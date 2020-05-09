@@ -24,6 +24,7 @@
         "react-mic": "^12.4.6",
         "semantic-ui-react": "^0.88.2",
         "styled-components": "^5.1.0",
+        "use-dark-mode": "^2.3.1",
         "yup": "^0.28.5"
     },
     "devDependencies": {

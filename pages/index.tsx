@@ -15,6 +15,8 @@ import { firebaseClient } from "../util/cardsClient";
 import CardsTable from "../components/Cards/CardsTable";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useTheme } from "styled-components";
+import useDarkMode from "use-dark-mode";
 const PreviewCard = dynamic(() => import("../components/Cards/PreviewCard"), {
     ssr: false
 });
@@ -56,6 +58,7 @@ const CardsPage: NextPage<CardsProps> = ({ cards }) => {
     const [showConfirm, setShowConfirm] = React.useState(false);
     const [sortType, setSortType] = React.useState("DATE_DESC");
     const [selected, setSelected] = React.useState<string[]>([]);
+    const darkMode = useDarkMode();
     const { reload } = useRouter();
 
     function handleChangeSort(e: React.SyntheticEvent, data: DropdownProps) {
@@ -92,7 +95,7 @@ const CardsPage: NextPage<CardsProps> = ({ cards }) => {
         <>
             <Grid>
                 <Grid.Column width={8} verticalAlign="middle">
-                    <Header as="h1">Cards</Header>
+                    <Header as="h1" inverted={darkMode.value}>Cards</Header>
                 </Grid.Column>
                 <Grid.Column width={8} textAlign="right">
                     {selected?.length ? (
