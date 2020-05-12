@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { Card, Button, Icon, CardProps } from "semantic-ui-react";
-import { ICard } from "../../interfaces/card";
+import { Card, Button, Icon, CardProps, Popup, Label } from "semantic-ui-react";
+import { ICard, WorkflowStatus } from "../../interfaces/card";
 import { formatShortDate } from "../../util/dateUtils";
 import Link from "next/link";
 
@@ -15,36 +15,36 @@ function usePreviewCard(playbackAudioUrl: string) {
     const [{ playing, track, hasActions }, setState] = React.useState({
         playing: false,
         track: new Audio(playbackAudioUrl),
-        hasActions: false,
+        hasActions: false
     });
 
     function play() {
         track.play();
         track.addEventListener("playing", () => {
-            setState((prevState) => ({ ...prevState, playing: true }));
+            setState(prevState => ({ ...prevState, playing: true }));
         });
         track.addEventListener("ended", () => {
-            setState((prevState) => ({ ...prevState, playing: false }));
+            setState(prevState => ({ ...prevState, playing: false }));
         });
     }
 
     function stop() {
         track.pause();
         track.currentTime = 0;
-        setState((prevState) => ({ ...prevState, playing: false }));
+        setState(prevState => ({ ...prevState, playing: false }));
     }
 
     function revealActions() {
-        setState((prevState) => ({
+        setState(prevState => ({
             ...prevState,
-            hasActions: true,
+            hasActions: true
         }));
     }
 
     function hideActions() {
-        setState((prevState) => ({
+        setState(prevState => ({
             ...prevState,
-            hasActions: false,
+            hasActions: false
         }));
     }
 
@@ -57,14 +57,21 @@ const PreviewCard: React.FC<IProps> = ({
     onSelect,
     ...cardProps
 }) => {
-    const { id, title, createdDate, phrase, playbackAudioUrl } = card;
+    const {
+        id,
+        title,
+        createdDate,
+        phrase,
+        playbackAudioUrl,
+        workflowStatus
+    } = card;
     const {
         playing,
         play,
         stop,
         revealActions,
         hideActions,
-        hasActions,
+        hasActions
     } = usePreviewCard(playbackAudioUrl);
 
     const handlePlayAudio = () => {
@@ -86,7 +93,7 @@ const PreviewCard: React.FC<IProps> = ({
             fluid
             onMouseEnter={() => revealActions()}
             onMouseLeave={() => hideActions()}
-            raised={selected}
+            raised={selected || hasActions}
             {...cardProps}
         >
             <Card.Content>
@@ -120,15 +127,32 @@ const PreviewCard: React.FC<IProps> = ({
                     </Link>
                 </div>
                 {hasActions || selected ? (
-                    <StyledCardSelectButton
-                        circular
-                        basic={selected ? undefined : true}
-                        color={selected ? "yellow" : undefined}
-                        icon="check"
-                        size="tiny"
-                        onClick={handleSelect}
-                    />
-                ) : undefined}
+                    <>
+                        <StyledCardSelectButton
+                            circular
+                            basic={selected ? undefined : true}
+                            color={selected ? "yellow" : undefined}
+                            icon="check"
+                            size="tiny"
+                            onClick={handleSelect}
+                        />
+                        <StyledCardStatusLabel
+                            basic={workflowStatus !== WorkflowStatus.approved}
+                            size="tiny"
+                            color={
+                                workflowStatus === WorkflowStatus.approved
+                                    ? "green"
+                                    : undefined
+                            }
+                        >
+                            {workflowStatus === WorkflowStatus.approved
+                                ? "Approved"
+                                : "Needs Approval"}
+                        </StyledCardStatusLabel>
+                    </>
+                ) : (
+                    undefined
+                )}
             </Card.Content>
         </StyledCard>
     );
@@ -144,6 +168,13 @@ const StyledCard = styled(Card)`
 const StyledCardTitle = styled.span`
     display: inline-block;
     width: 80%;
+`;
+
+const StyledCardStatusLabel = styled(Label)`
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -70%);
 `;
 
 const StyledCardSelectButton = styled(Button)`

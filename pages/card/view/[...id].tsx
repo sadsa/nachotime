@@ -1,20 +1,24 @@
 import React from "react";
 import { NextPage, NextPageContext } from "next";
-import { Header } from "semantic-ui-react";
+import { Button } from "semantic-ui-react";
 import { ICard } from "../../../interfaces/card";
 import ReviewCard from "../../../components/Cards/ReviewCard";
 import { firebaseClient } from "../../../util/cardsClient";
+import { useRouter } from "next/router";
 
-const CardViewPage: NextPage<ICard> = (card) => {
+const CardViewPage: NextPage<ICard> = card => {
+    const { back } = useRouter();
     return (
         <>
-            <Header as="h1">{card.title}</Header>
+            <div className="bottom-spacer">
+                <Button onClick={back} basic content="< Back" />
+            </div>
             <ReviewCard {...card} />
         </>
     );
 };
 
-CardViewPage.getInitialProps = async function (
+CardViewPage.getInitialProps = async function(
     context: NextPageContext
 ): Promise<ICard> {
     const slug = context?.query?.id ? context.query.id[0] : "";

@@ -1,10 +1,9 @@
 import React from "react";
 import { NextPage } from "next";
-import { Header, Button } from "semantic-ui-react";
+import { Button } from "semantic-ui-react";
 import CardDetailForm from "../../components/Cards/CardDetailForm";
-import firebase from "../../firebase/clientApp";
-import { ICard } from "../../interfaces/card";
-import Link from "next/link";
+import { ICard, WorkflowStatus } from "../../interfaces/card";
+import { useRouter } from "next/router";
 
 const emptyCard: ICard = {
     id: "",
@@ -12,22 +11,22 @@ const emptyCard: ICard = {
     phrase: "",
     translation: "",
     playbackAudioUrl: "",
+    workflowStatus: WorkflowStatus.notApproved,
     expressions: [
         {
             value: "",
-            translation: "",
-        },
-    ],
-    createdDate: firebase.firestore.Timestamp.now()
+            translation: ""
+        }
+    ]
 };
 
 const CreateCardPage: NextPage<ICard> = () => {
+    const { back } = useRouter();
     return (
         <>
-            <Link href="/">
-                <Button basic content="< Back" />
-            </Link>
-            <Header as="h1">Create New Card</Header>
+            <div className="bottom-spacer">
+                <Button onClick={back} basic content="< Back" />
+            </div>
             <CardDetailForm {...emptyCard} />
         </>
     );

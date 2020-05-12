@@ -1,14 +1,14 @@
 import React from "react";
-import { Button, Form, Grid } from "semantic-ui-react";
+import { Button, Form, Grid, Header, Checkbox } from "semantic-ui-react";
 import { useForm, useFieldArray } from "react-hook-form";
-import { ICard } from "../../interfaces/card";
+import { ICard, WorkflowStatus } from "../../interfaces/card";
 import dynamic from "next/dynamic";
 import * as yup from "yup";
 import { firebaseClient } from "../../util/cardsClient";
 import { useRouter } from "next/router";
 
 const AudioRecordField = dynamic(() => import("../common/AudioRecordField"), {
-    ssr: false,
+    ssr: false
 });
 
 type CardFormField = keyof Omit<ICard, "id" | "createdDate">;
@@ -18,15 +18,16 @@ enum StatusEnum {
     idle = "idle",
     pending = "pending",
     resolved = "resolved",
-    rejected = "rejected",
+    rejected = "rejected"
 }
 
 const CardFormSchema = yup.object().shape<CardFormViewModel>({
     title: yup.string().required(),
     phrase: yup.string().required(),
     translation: yup.string().required(),
+    workflowStatus: yup.number().required(),
     playbackAudioUrl: yup.string().required(),
-    expressions: yup.array().of(yup.object()),
+    expressions: yup.array().of(yup.object())
 });
 
 async function createOrUpdateCard(data: ICard): Promise<void> {
@@ -37,18 +38,24 @@ async function createOrUpdateCard(data: ICard): Promise<void> {
 }
 
 const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
-    const { register, handleSubmit, setValue, errors, control } = useForm<
-        ICard
-    >({
+    const {
+        register,
+        handleSubmit,
+        setValue,
+        errors,
+        control,
+        watch,
+    } = useForm<ICard>({
         validationSchema: CardFormSchema,
-        defaultValues: { ...card },
+        defaultValues: { ...card }
     });
     const { fields, append, remove } = useFieldArray({
         control,
-        name: "expressions",
+        name: "expressions"
     });
     const router = useRouter();
     const [status, setStatus] = React.useState(StatusEnum.resolved);
+    const workflowStatus = watch("workflowStatus");
 
     const onSubmit = (data: Partial<ICard>) => {
         setStatus(StatusEnum.pending);
@@ -67,19 +74,54 @@ const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
     React.useEffect(() => {
         register({
             name: "playbackAudioUrl",
-            defaultValue: card?.playbackAudioUrl || "",
+            defaultValue: card?.playbackAudioUrl || ""
+        });
+        register({
+            name: "workflowStatus",
+            defaultValue: card?.workflowStatus ?? WorkflowStatus.notApproved
         });
     }, [register]);
 
     return (
-        <div>
+        <>
             <Form
                 onSubmit={handleSubmit(onSubmit)}
                 loading={status === StatusEnum.pending}
             >
                 <Grid columns={2}>
                     <Grid.Row>
-                        <Grid.Column width="ten">
+                        <Grid.Column verticalAlign="middle" width="8">
+                            <Header as="h1">
+                                {!card.createdDate ? "Create New" : "Edit"} Card
+                            </Header>
+                        </Grid.Column>
+                        <Grid.Column width="8" textAlign="right">
+                            <Button
+                                basic={workflowStatus !== WorkflowStatus.approved}
+                                color={workflowStatus === WorkflowStatus.approved ? "green" : undefined}
+                                type="button"
+                                label={
+                                    workflowStatus === WorkflowStatus.approved
+                                        ? "Approved"
+                                        : "Not Approved"
+                                }
+                                icon="check"
+                                onClick={(e: React.SyntheticEvent) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setValue(
+                                        "workflowStatus",
+                                        workflowStatus ===
+                                            WorkflowStatus.approved
+                                            ? WorkflowStatus.notApproved
+                                            : WorkflowStatus.approved
+                                    )}
+                                }
+                            />
+                        </Grid.Column>
+                    </Grid.Row>
+                    <Grid.Row>
+                        <Grid.Column mobile="16" computer="ten">
                             <Form.Field error={!!errors.title}>
                                 <label>Title</label>
                                 <input name="title" ref={register} />
@@ -165,7 +207,7 @@ const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
                     </Grid.Row>
                 </Grid>
             </Form>
-        </div>
+        </>
     );
 };
 

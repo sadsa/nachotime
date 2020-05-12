@@ -42,6 +42,7 @@ const sortOptions = [
 ];
 
 function sortCards(a: ICard, b: ICard, sortType: string): number {
+    if(!a.createdDate || !b.createdDate) return 0;
     if (sortType === "DATE_ASC") {
         return a.createdDate.seconds - b.createdDate.seconds;
     }

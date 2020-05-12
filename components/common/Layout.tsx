@@ -1,6 +1,6 @@
 import React from "react";
-import { Container, Image, Menu, Checkbox, Icon } from "semantic-ui-react";
-import styled from "styled-components";
+import { Container, Image, Menu,  Icon } from "semantic-ui-react";
+import styled, { createGlobalStyle } from "styled-components";
 import { useRouter } from "next/router";
 import Link from "next/link";
 
@@ -9,6 +9,7 @@ const Layout: React.FC<any> = (props) => {
     const darkMode = query.darkMode && JSON.parse(query.darkMode as string);
     return (
         <>
+            <GlobalStyles />
             <StyledMenu borderless>
                 <Container>
                     <Link href="/">
@@ -35,6 +36,12 @@ const Layout: React.FC<any> = (props) => {
         </>
     );
 };
+
+const GlobalStyles = createGlobalStyle`
+    .bottom-spacer {
+        margin-bottom: 2rem;
+    }
+`
 
 const StyledLogo = styled(Image)`
     margin-right: 1.5em;
