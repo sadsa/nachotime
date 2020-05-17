@@ -1,24 +1,24 @@
 import React from "react";
-import { Button, Form, Grid, Header, Checkbox } from "semantic-ui-react";
+import { Button, Form, Grid, Header, Dropdown } from "semantic-ui-react";
 import { useForm, useFieldArray } from "react-hook-form";
-import { ICard, WorkflowStatus } from "../../interfaces/card";
+import { ICard, WorkflowStatus, ICardTagOption } from "../../interfaces/card";
 import dynamic from "next/dynamic";
 import * as yup from "yup";
 import { firebaseClient } from "../../util/cardsClient";
 import { useRouter } from "next/router";
 
 const AudioRecordField = dynamic(() => import("../common/AudioRecordField"), {
-    ssr: false
+    ssr: false,
 });
 
-type CardFormField = keyof Omit<ICard, "id" | "createdDate">;
+type CardFormField = keyof Omit<ICard, "id" | "tags" | "createdDate">;
 type CardFormViewModel = Record<CardFormField, any>;
 
 enum StatusEnum {
     idle = "idle",
     pending = "pending",
     resolved = "resolved",
-    rejected = "rejected"
+    rejected = "rejected",
 }
 
 const CardFormSchema = yup.object().shape<CardFormViewModel>({
@@ -27,8 +27,10 @@ const CardFormSchema = yup.object().shape<CardFormViewModel>({
     translation: yup.string().required(),
     workflowStatus: yup.number().required(),
     playbackAudioUrl: yup.string().required(),
-    expressions: yup.array().of(yup.object())
+    expressions: yup.array().of(yup.object()),
 });
+
+const initialTagOptions: ICardTagOption[] = [];
 
 async function createOrUpdateCard(data: ICard): Promise<void> {
     if (!data.id) {
@@ -47,14 +49,16 @@ const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
         watch,
     } = useForm<ICard>({
         validationSchema: CardFormSchema,
-        defaultValues: { ...card }
+        defaultValues: { ...card },
     });
     const { fields, append, remove } = useFieldArray({
         control,
-        name: "expressions"
+        name: "expressions",
     });
     const router = useRouter();
     const [status, setStatus] = React.useState(StatusEnum.resolved);
+    const [options, setOptions] = React.useState(initialTagOptions);
+    const [currentValues, setCurrentValues] = React.useState([]);
     const workflowStatus = watch("workflowStatus");
 
     const onSubmit = (data: Partial<ICard>) => {
@@ -71,14 +75,30 @@ const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
         setValue("playbackAudioUrl", URL.createObjectURL(audioBlob));
     };
 
+    const handleTagAddition = (e: React.SyntheticEvent, { value }: any) => {
+        setOptions((prevState) => [
+            { key: value, text: value, value },
+            ...prevState,
+        ]);
+    };
+
+    const handleTagChange = (e: React.SyntheticEvent, { value }: any) => {
+        setCurrentValues(value);
+        setValue("tags", value);
+    };
+
     React.useEffect(() => {
         register({
             name: "playbackAudioUrl",
-            defaultValue: card?.playbackAudioUrl || ""
+            defaultValue: card?.playbackAudioUrl || "",
         });
         register({
             name: "workflowStatus",
-            defaultValue: card?.workflowStatus ?? WorkflowStatus.notApproved
+            defaultValue: card?.workflowStatus ?? WorkflowStatus.notApproved,
+        });
+        register({
+            name: "tags",
+            defaultValue: card?.tags ?? [],
         });
     }, [register]);
 
@@ -97,8 +117,14 @@ const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
                         </Grid.Column>
                         <Grid.Column width="8" textAlign="right">
                             <Button
-                                basic={workflowStatus !== WorkflowStatus.approved}
-                                color={workflowStatus === WorkflowStatus.approved ? "green" : undefined}
+                                basic={
+                                    workflowStatus !== WorkflowStatus.approved
+                                }
+                                color={
+                                    workflowStatus === WorkflowStatus.approved
+                                        ? "green"
+                                        : undefined
+                                }
                                 type="button"
                                 label={
                                     workflowStatus === WorkflowStatus.approved
@@ -115,8 +141,8 @@ const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
                                             WorkflowStatus.approved
                                             ? WorkflowStatus.notApproved
                                             : WorkflowStatus.approved
-                                    )}
-                                }
+                                    );
+                                }}
                             />
                         </Grid.Column>
                     </Grid.Row>
@@ -198,6 +224,21 @@ const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
                                 <AudioRecordField
                                     onChange={handleStopRecording}
                                     playbackAudioUrl={card.playbackAudioUrl}
+                                />
+                            </Form.Field>
+                            <Form.Field error={!!errors.tags}>
+                                <label>Tags</label>
+                                <Dropdown
+                                    options={options}
+                                    placeholder="Create Tags"
+                                    search
+                                    selection
+                                    fluid
+                                    multiple
+                                    allowAdditions
+                                    value={currentValues}
+                                    onAddItem={handleTagAddition}
+                                    onChange={handleTagChange}
                                 />
                             </Form.Field>
                             <Button type="submit" id="submit">
