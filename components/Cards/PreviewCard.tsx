@@ -5,7 +5,6 @@ import {
     Button,
     Icon,
     CardProps,
-    Popup,
     Label,
     LabelGroup,
 } from "semantic-ui-react";
@@ -72,7 +71,7 @@ const PreviewCard: React.FC<IProps> = ({
         phrase,
         playbackAudioUrl,
         workflowStatus,
-        tags,
+        expressions,
     } = card;
     const {
         playing,
@@ -121,29 +120,31 @@ const PreviewCard: React.FC<IProps> = ({
                     {createdDate ? formatShortDate(createdDate) : "No Date"}
                 </Card.Meta>
                 <Card.Description as="p">{phrase}</Card.Description>
-                {tags && tags.length ? (
+                {expressions && expressions.length ? (
                     <Card.Description>
                         <LabelGroup>
-                            {tags.map((tag, index) => (
-                                <Label
-                                    key={index}
-                                    as="a"
-                                    content={tag}
-                                    size="tiny"
-                                />
-                            ))}
+                            {expressions
+                                .filter((exp) => exp.value !== "")
+                                .map((expression, index) => (
+                                    <Label
+                                        key={index}
+                                        as="a"
+                                        content={expression.value}
+                                        size="tiny"
+                                    />
+                                ))}
                         </LabelGroup>
                     </Card.Description>
                 ) : undefined}
             </Card.Content>
             <Card.Content extra>
                 <div className="ui two buttons">
-                    <Link href={`card/${id}`}>
+                    <Link href={`cards/${id}`}>
                         <Button basic>
                             <Icon name="edit" /> Edit
                         </Button>
                     </Link>
-                    <Link href={`card/view/${id}`}>
+                    <Link href={`cards/view/${id}`}>
                         <Button basic>
                             <Icon name="eye" /> Review
                         </Button>
@@ -163,7 +164,7 @@ const PreviewCard: React.FC<IProps> = ({
                             size="tiny"
                             color={
                                 workflowStatus === WorkflowStatus.approved
-                                    ? "green" 
+                                    ? "green"
                                     : "yellow"
                             }
                         >

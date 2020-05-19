@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Image, Menu,  Icon } from "semantic-ui-react";
+import { Container, Image, Menu, Icon } from "semantic-ui-react";
 import styled, { createGlobalStyle } from "styled-components";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -12,11 +12,15 @@ const Layout: React.FC<any> = (props) => {
             <GlobalStyles />
             <StyledMenu borderless>
                 <Container>
-                    <Link href="/">
-                        <Menu.Item header>
-                            <StyledLogo size="mini" src="/images/logo.png" />
-                            Nachotime!
-                        </Menu.Item>
+                    <Menu.Item header>
+                        <StyledLogo size="mini" src="/images/logo.png" />
+                        Nachotime!
+                    </Menu.Item>
+                    <Link href="/cards">
+                        <Menu.Item>Cards</Menu.Item>
+                    </Link>
+                    <Link href="/expressions">
+                        <Menu.Item>Expressions</Menu.Item>
                     </Link>
                     {darkMode ? (
                         <Menu.Item position="right" href="/">
@@ -41,7 +45,7 @@ const GlobalStyles = createGlobalStyle`
     .bottom-spacer {
         margin-bottom: 2rem;
     }
-`
+`;
 
 const StyledLogo = styled(Image)`
     margin-right: 1.5em;

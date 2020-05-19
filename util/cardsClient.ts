@@ -58,7 +58,7 @@ async function uploadAudio(url: string, id: string): Promise<string> {
     });
 }
 
-export const firebaseClient = {
+export const cardsClient = {
     getCard,
     getCards,
     createCard,

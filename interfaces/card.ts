@@ -14,12 +14,5 @@ export interface ICard {
     playbackAudioUrl: string;
     workflowStatus: WorkflowStatus;
     expressions: IExpression[];
-    tags?: string[];
     createdDate?: firebase.firestore.Timestamp;
-}
-
-export interface ICardTagOption {
-    key: string;
-    text: string;
-    value: string;
 }

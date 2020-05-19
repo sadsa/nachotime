@@ -58,13 +58,13 @@ const CardsTable: React.FC<ICardsTableProps> = ({
                                 );
                             })}
                             <Table.Cell collapsing>
-                                <Link href={`card/${card.id}`}>
+                                <Link href={`cards/${card.id}`}>
                                     <Button>
                                         <Icon name="edit" />
                                         Edit
                                     </Button>
                                 </Link>
-                                <Link href={`card/view/${card.id}`}>
+                                <Link href={`cards/view/${card.id}`}>
                                     <Button>
                                         <Icon name="eye" />
                                         Review

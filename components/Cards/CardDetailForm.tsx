@@ -1,17 +1,17 @@
 import React from "react";
-import { Button, Form, Grid, Header, Dropdown } from "semantic-ui-react";
+import { Button, Form, Grid, Header } from "semantic-ui-react";
 import { useForm, useFieldArray } from "react-hook-form";
-import { ICard, WorkflowStatus, ICardTagOption } from "../../interfaces/card";
+import { ICard, WorkflowStatus } from "../../interfaces/card";
 import dynamic from "next/dynamic";
 import * as yup from "yup";
-import { firebaseClient } from "../../util/cardsClient";
+import { cardsClient } from "../../util/cardsClient";
 import { useRouter } from "next/router";
 
 const AudioRecordField = dynamic(() => import("../common/AudioRecordField"), {
     ssr: false,
 });
 
-type CardFormField = keyof Omit<ICard, "id" | "tags" | "createdDate">;
+type CardFormField = keyof Omit<ICard, "id" | "createdDate">;
 type CardFormViewModel = Record<CardFormField, any>;
 
 enum StatusEnum {
@@ -30,13 +30,11 @@ const CardFormSchema = yup.object().shape<CardFormViewModel>({
     expressions: yup.array().of(yup.object()),
 });
 
-const initialTagOptions: ICardTagOption[] = [];
-
 async function createOrUpdateCard(data: ICard): Promise<void> {
     if (!data.id) {
-        return firebaseClient.createCard(data);
+        return cardsClient.createCard(data);
     }
-    return firebaseClient.updateCard(data);
+    return cardsClient.updateCard(data);
 }
 
 const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
@@ -57,13 +55,11 @@ const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
     });
     const router = useRouter();
     const [status, setStatus] = React.useState(StatusEnum.resolved);
-    const [options, setOptions] = React.useState(initialTagOptions);
-    const [currentValues, setCurrentValues] = React.useState([]);
     const workflowStatus = watch("workflowStatus");
 
-    const onSubmit = (data: Partial<ICard>) => {
+    const onSubmit = (formData: Partial<ICard>) => {
         setStatus(StatusEnum.pending);
-        createOrUpdateCard({ ...card, ...data })
+        createOrUpdateCard({ ...card, ...formData })
             .then(() => {
                 router.push("/");
                 setStatus(StatusEnum.resolved);
@@ -75,18 +71,6 @@ const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
         setValue("playbackAudioUrl", URL.createObjectURL(audioBlob));
     };
 
-    const handleTagAddition = (e: React.SyntheticEvent, { value }: any) => {
-        setOptions((prevState) => [
-            { key: value, text: value, value },
-            ...prevState,
-        ]);
-    };
-
-    const handleTagChange = (e: React.SyntheticEvent, { value }: any) => {
-        setCurrentValues(value);
-        setValue("tags", value);
-    };
-
     React.useEffect(() => {
         register({
             name: "playbackAudioUrl",
@@ -95,10 +79,6 @@ const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
         register({
             name: "workflowStatus",
             defaultValue: card?.workflowStatus ?? WorkflowStatus.notApproved,
-        });
-        register({
-            name: "tags",
-            defaultValue: card?.tags ?? [],
         });
     }, [register]);
 
@@ -224,21 +204,6 @@ const CardDetailForm: React.FC<ICard> = ({ ...card }) => {
                                 <AudioRecordField
                                     onChange={handleStopRecording}
                                     playbackAudioUrl={card.playbackAudioUrl}
-                                />
-                            </Form.Field>
-                            <Form.Field error={!!errors.tags}>
-                                <label>Tags</label>
-                                <Dropdown
-                                    options={options}
-                                    placeholder="Create Tags"
-                                    search
-                                    selection
-                                    fluid
-                                    multiple
-                                    allowAdditions
-                                    value={currentValues}
-                                    onAddItem={handleTagAddition}
-                                    onChange={handleTagChange}
                                 />
                             </Form.Field>
                             <Button type="submit" id="submit">
