@@ -14,13 +14,10 @@ const Layout: React.FC<any> = (props) => {
                 <Container>
                     <Menu.Item header>
                         <StyledLogo size="mini" src="/images/logo.png" />
-                        Nachotime!
+                        <span className="mobile hidden">Nachotime!</span>
                     </Menu.Item>
                     <Link href="/cards">
                         <Menu.Item>Cards</Menu.Item>
-                    </Link>
-                    <Link href="/expressions">
-                        <Menu.Item>Expressions</Menu.Item>
                     </Link>
                     {darkMode ? (
                         <Menu.Item position="right" href="/">

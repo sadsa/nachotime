@@ -29,8 +29,10 @@ class NachoDocument extends Document {
                         type="image/png"
                         sizes="32x32"
                     />
-                    <link href="/images/icons/icon-192x192.png" rel="icon" sizes="192x192" />
-                    <link href="/images/icons/icon-128x128.png" rel="icon" sizes="128x128" />
+                    <link
+                        rel="stylesheet"
+                        href="/css/responsive-semantic-ui.css"
+                    />
                     <meta name="theme-color" content="#317EFB" />
                     {(this.props as any).darkMode ? (
                         <link

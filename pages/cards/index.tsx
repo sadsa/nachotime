@@ -91,7 +91,7 @@ const CardsPage: NextPage<CardsProps> = ({ cards }) => {
 
     return (
         <>
-            <Grid stackable>
+            <Grid>
                 <Grid.Row>
                     <Grid.Column width={8} verticalAlign="middle">
                         <Header as="h1">
@@ -103,6 +103,7 @@ const CardsPage: NextPage<CardsProps> = ({ cards }) => {
                             <Dropdown
                                 basic
                                 text="Actions"
+                                className="mobile hidden"
                                 style={{ marginRight: "1rem" }}
                                 floating
                             >
@@ -119,6 +120,7 @@ const CardsPage: NextPage<CardsProps> = ({ cards }) => {
                             basic
                             selection
                             style={{ marginRight: "1rem" }}
+                            className="mobile hidden"
                             options={sortOptions}
                             defaultValue={sortOptions[0].value}
                             onChange={handleChangeSort}
@@ -127,6 +129,7 @@ const CardsPage: NextPage<CardsProps> = ({ cards }) => {
                             basic
                             size="small"
                             style={{ marginRight: "1rem" }}
+                            className="mobile hidden"
                         >
                             <Button
                                 icon="block layout"
