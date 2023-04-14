@@ -16,6 +16,9 @@ export const envSchema = z.object({
   /**
    * Firebase environment variables.
    */
+  GOOGLE_APPLICATION_CREDENTIALS: z.string().min(1, {
+    message: "GOOGLE_APPLICATION_CREDENTIALS environment variable must be set",
+  }),
   API_KEY: z.string().min(1, {
     message: "API_KEY environment variable must be set",
   }),

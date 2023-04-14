@@ -1,7 +1,7 @@
 import { getDocs } from "firebase/firestore/lite";
-import { createCollection } from "~/firebase";
+import { getCollection } from "~/firebase.server";
 
-const expressionsCollection = createCollection("expressions");
+const expressionsCollection = getCollection("expressions");
 
 export async function getExpressions() {
   const snapshot = await getDocs(expressionsCollection);
