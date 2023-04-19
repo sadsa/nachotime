@@ -9,9 +9,6 @@ export const envSchema = z.object({
   SESSION_SECRET: z.string().min(1, {
     message: "SESSION_SECRET environment variable must be set",
   }),
-  DATABASE_URL: z.string().min(1, {
-    message: "DATABASE_URL environment variable must be set",
-  }),
 
   /**
    * Firebase environment variables.
@@ -25,8 +22,8 @@ export const envSchema = z.object({
   AUTH_DOMAIN: z.string().min(1, {
     message: "AUTH_DOMAIN environment variable must be set",
   }),
-  FB_DATABASE_URL: z.string().min(1, {
-    message: "FB_DATABASE_URL environment variable must be set",
+  DATABASE_URL: z.string().min(1, {
+    message: "DATABASE_URL environment variable must be set",
   }),
   PROJECT_ID: z.string().min(1, {
     message: "PROJECT_ID environment variable must be set",

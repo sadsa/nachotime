@@ -9,4 +9,5 @@ export const base = style({
   font: "inherit",
   verticalAlign: "baseline",
   WebkitTapHighlightColor: "transparent",
+  height: "100%",
 });

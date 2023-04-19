@@ -14,7 +14,7 @@ import { env } from "~/env";
 if (!admin.apps.length) {
   initializeAdminApp({
     credential: applicationDefault(),
-    databaseURL: env.FB_DATABASE_URL,
+    databaseURL: env.DATABASE_URL,
   });
 }
 
@@ -27,7 +27,7 @@ export const getCollection = <T = DocumentData>(collectionName: string) => {
 const firebaseConfig = {
   apiKey: env.API_KEY,
   authDomain: env.AUTH_DOMAIN,
-  databaseURL: env.FB_DATABASE_URL,
+  databaseURL: env.DATABASE_URL,
   projectId: env.PROJECT_ID,
   storageBucket: env.STORAGE_BUCKET,
   messagingSenderId: env.MESSAGING_SENDER_ID,

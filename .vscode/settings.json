@@ -1,6 +1,7 @@
 {
     "conventionalCommits.scopes": [
         "Cards",
-        "Join"
+        "Join",
+        "Login"
     ]
 }

@@ -22,14 +22,26 @@ const storage = createCookieSessionStorage({
   },
 });
 
-export async function createUserSession(idToken: string, redirectTo: string) {
+export async function createUserSession({
+  idToken,
+  remember,
+  redirectTo,
+}: {
+  idToken: string;
+  remember: boolean;
+  redirectTo: string;
+}) {
   const token = await getSessionToken(idToken);
   const session = await storage.getSession();
   session.set("token", token);
 
   return redirect(redirectTo, {
     headers: {
-      "Set-Cookie": await storage.commitSession(session),
+      "Set-Cookie": await storage.commitSession(session, {
+        maxAge: remember
+          ? 60 * 60 * 24 * 7 // 7 days
+          : undefined,
+      }),
     },
   });
 }

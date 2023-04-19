@@ -1,61 +1,53 @@
 import type { ActionArgs, LoaderArgs, V2_MetaFunction } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
-import { Link, useActionData, useSearchParams } from "@remix-run/react";
-import { Button, Form, TextField } from "@adobe/react-spectrum";
-import * as React from "react";
+import {
+  Link as RouterLink,
+  useNavigation,
+  useSearchParams,
+  useSubmit,
+} from "@remix-run/react";
+import { Button, Flex, Form, View, Link, Text } from "@adobe/react-spectrum";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { FormProvider, useForm } from "react-hook-form";
+import { zx } from "zodix";
+import { z } from "zod";
 
-import { createUserSession, getUserId } from "~/session.server";
-import { verifyLogin } from "~/models/user.server";
-import { safeRedirect, validateEmail } from "~/utils";
+import { safeRedirect } from "~/utils";
+import { signIn } from "~/utils/auth.server";
+import { createUserSession, getUserSession } from "~/utils/session.server";
+import { TextControl } from "~/components/form/TextControl";
+import { CheckboxControl } from "~/components/form/CheckboxControl";
+
+const loginFormSchema = z.object({
+  email: z.string().email().min(1, "Email is invalid"),
+  password: z
+    .string()
+    .nonempty("Password is required")
+    .min(8, "Password is too short"),
+  remember: z.enum(["default", "on"]),
+});
 
 export async function loader({ request }: LoaderArgs) {
-  const userId = await getUserId(request);
-  if (userId) return redirect("/");
+  const sessionUser = await getUserSession(request);
+  if (sessionUser) return redirect("/");
   return json({});
 }
 
 export async function action({ request }: ActionArgs) {
   const formData = await request.formData();
-  const email = formData.get("email");
-  const password = formData.get("password");
   const redirectTo = safeRedirect(formData.get("redirectTo"), "/notes");
-  const remember = formData.get("remember");
 
-  if (!validateEmail(email)) {
-    return json(
-      { errors: { email: "Email is invalid", password: null } },
-      { status: 400 }
-    );
-  }
+  const { email, password, remember } = await zx.parseForm(
+    formData,
+    loginFormSchema
+  );
 
-  if (typeof password !== "string" || password.length === 0) {
-    return json(
-      { errors: { email: null, password: "Password is required" } },
-      { status: 400 }
-    );
-  }
-
-  if (password.length < 8) {
-    return json(
-      { errors: { email: null, password: "Password is too short" } },
-      { status: 400 }
-    );
-  }
-
-  const user = await verifyLogin(email, password);
-
-  if (!user) {
-    return json(
-      { errors: { email: "Invalid email or password", password: null } },
-      { status: 400 }
-    );
-  }
+  const { user } = await signIn(email, password);
 
   return createUserSession({
-    request,
-    userId: user.id,
-    remember: remember === "on" ? true : false,
+    idToken: await user.getIdToken(),
     redirectTo,
+    remember: remember === "on",
   });
 }
 
@@ -63,63 +55,58 @@ export const meta: V2_MetaFunction = () => [{ title: "Login" }];
 
 export default function LoginPage() {
   const [searchParams] = useSearchParams();
-  const redirectTo = searchParams.get("redirectTo") || "/notes";
-  const actionData = useActionData<typeof action>();
+  const methods = useForm({
+    defaultValues: { email: "", password: "", remember: "default" },
+    resolver: zodResolver(loginFormSchema),
+  });
+  const submit = useSubmit();
+  const { state } = useNavigation();
 
-  // @todo
-  const emailRef = React.useRef<HTMLInputElement>(null);
-  const passwordRef = React.useRef<HTMLInputElement>(null);
-
-  React.useEffect(() => {
-    if (actionData?.errors?.email) {
-      emailRef.current?.focus();
-    } else if (actionData?.errors?.password) {
-      passwordRef.current?.focus();
-    }
-  }, [actionData]);
+  const redirectTo = searchParams.get("redirectTo") || "/cards";
 
   return (
-    <Form
-      labelPosition="top"
-      labelAlign="start"
-      method="post"
-      maxWidth="size-3600"
+    <Flex
+      minHeight="100%"
+      direction="column"
+      alignItems="center"
+      justifyContent="center"
+      gap="size-100"
     >
-      <TextField
-        label="Email Address"
-        name="email"
-        type="email"
-        errorMessage={actionData?.errors?.email}
-        validationState={actionData?.errors?.email ? "invalid" : "valid"}
-      />
-      <TextField
-        label="Password"
-        name="password"
-        type="password"
-        errorMessage={actionData?.errors?.password}
-        validationState={actionData?.errors?.password ? "invalid" : "valid"}
-      />
-      <input type="hidden" name="redirectTo" value={redirectTo} />
-      <Button variant="primary" type="submit">
-        Log in
-      </Button>
-      <div>
-        <div>
-          <input id="remember" name="remember" type="checkbox" />
-          <label htmlFor="remember">Remember me</label>
-        </div>
-        <div>
-          Don't have an account?{" "}
-          <Link
-            to={{
-              pathname: "/join",
-              search: searchParams.toString(),
-            }}
-          >
-            Sign up
-          </Link>
-        </div>
-      </div>
-    </Form>
+      <FormProvider {...methods}>
+        <Form
+          labelPosition="top"
+          labelAlign="start"
+          method="post"
+          width="size-5000"
+          onSubmit={methods.handleSubmit((_, event) =>
+            submit(event?.target, { replace: true })
+          )}
+        >
+          <input type="hidden" name="redirectTo" value={redirectTo} />
+          <TextControl name="email" label="Email Address" type="email" />
+          <TextControl name="password" label="Password" type="password" />
+          <Button variant="primary" type="submit">
+            {state === "submitting" ? "Submitting..." : "Login"}
+          </Button>
+          <Flex alignItems="center" direction="column">
+            <CheckboxControl name="remember">Remember me</CheckboxControl>
+            <View>
+              <Text>Don't have an account?</Text>{" "}
+              <Link>
+                <RouterLink
+                  className="text-blue-500 underline"
+                  to={{
+                    pathname: "/join",
+                    search: searchParams.toString(),
+                  }}
+                >
+                  Sign up
+                </RouterLink>
+              </Link>
+            </View>
+          </Flex>
+        </Form>
+      </FormProvider>
+    </Flex>
   );
 }

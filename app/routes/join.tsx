@@ -38,9 +38,12 @@ export async function action({ request }: ActionArgs) {
   const { email, password } = await zx.parseForm(formData, joinFormSchema);
 
   const { user } = await signUp(email, password);
-  const idToken = await user.getIdToken();
 
-  return createUserSession(idToken, redirectTo);
+  return createUserSession({
+    idToken: await user.getIdToken(),
+    redirectTo,
+    remember: false,
+  });
 }
 
 export const meta: V2_MetaFunction = () => [{ title: "Sign Up" }];
@@ -57,30 +60,31 @@ export default function JoinPage() {
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
 
   return (
-    <Flex minHeight="100%" direction="column" justifyContent="center">
-      <View
-        marginX="auto"
-        width="100%"
-        maxWidth={{ M: "100%" }}
-        paddingX="size-100"
-      >
-        <FormProvider {...methods}>
-          <Form
-            labelPosition="top"
-            labelAlign="start"
-            method="post"
-            maxWidth="size-3600"
-            onSubmit={methods.handleSubmit((_, event) =>
-              submit(event?.target, { replace: true })
-            )}
-          >
-            <input type="hidden" name="redirectTo" value={redirectTo} />
-            <TextControl name="email" label="Email Address" type="email" />
-            <TextControl name="password" label="Password" type="password" />
-            <Button variant="primary" type="submit">
-              {state === "idle" ? "Create Account" : "Submitting..."}
-            </Button>
-            <div>
+    <Flex
+      minHeight="100%"
+      direction="column"
+      alignItems="center"
+      justifyContent="center"
+      gap="size-100"
+    >
+      <FormProvider {...methods}>
+        <Form
+          labelPosition="top"
+          labelAlign="start"
+          method="post"
+          width="size-5000"
+          onSubmit={methods.handleSubmit((_, event) =>
+            submit(event?.target, { replace: true })
+          )}
+        >
+          <input type="hidden" name="redirectTo" value={redirectTo} />
+          <TextControl name="email" label="Email Address" type="email" />
+          <TextControl name="password" label="Password" type="password" />
+          <Button variant="primary" type="submit">
+            {state === "submitting" ?  "Submitting..." : "Create Account"}
+          </Button>
+          <Flex alignItems="center" direction="column">
+            <View>
               Already have an account?{" "}
               <Link
                 className="text-blue-500 underline"
@@ -91,10 +95,10 @@ export default function JoinPage() {
               >
                 Log in
               </Link>
-            </div>
-          </Form>
-        </FormProvider>
-      </View>
+            </View>
+          </Flex>
+        </Form>
+      </FormProvider>
     </Flex>
   );
 }
