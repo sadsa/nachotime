@@ -11,12 +11,11 @@ npx create-remix@latest --template remix-run/indie-stack
 ## What's in the stack
 
 - [Fly app deployment](https://fly.io) with [Docker](https://www.docker.com/)
-- Production-ready [SQLite Database](https://sqlite.org)
 - Healthcheck endpoint for [Fly backups region fallbacks](https://fly.io/docs/reference/configuration/#services-http_checks)
 - [GitHub Actions](https://github.com/features/actions) for deploy on merge to production and staging environments
 - Email/Password Authentication with [cookie-based sessions](https://remix.run/utils/sessions#md-createcookiesessionstorage)
-- Database ORM with [Prisma](https://prisma.io)
-- Styling with [Tailwind](https://tailwindcss.com/)
+- Database with [Firebase](https://firebase.google.com/)
+- Styling with [Vanilla Extract](https://vanilla-extract.style/)
 - End-to-end testing with [Cypress](https://cypress.io)
 - Local third party request mocking with [MSW](https://mswjs.io)
 - Unit testing with [Vitest](https://vitest.dev) and [Testing Library](https://testing-library.com)
@@ -38,12 +37,6 @@ Click this button to create a [Gitpod](https://gitpod.io) workspace with the pro
 
   ```sh
   npx remix init
-  ```
-
-- Initial setup: _If you just generated this project, this step has been done for you._
-
-  ```sh
-  npm run setup
   ```
 
 - Start dev server:

@@ -37,6 +37,8 @@ export async function action({ request }: ActionArgs) {
 
   const { email, password } = await zx.parseForm(formData, joinFormSchema);
 
+  // @todo verify email
+
   const { user } = await signUp(email, password);
 
   return createUserSession({
