@@ -29,7 +29,7 @@ export default function App() {
       </head>
       <body className={styles.base}>
         <SSRProvider>
-          <Provider theme={defaultTheme} height="100%">
+          <Provider theme={defaultTheme} minHeight="100%">
             <Outlet />
           </Provider>
         </SSRProvider>
