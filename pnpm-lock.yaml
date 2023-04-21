@@ -7,6 +7,9 @@ dependencies:
   '@hookform/resolvers':
     specifier: ^3.1.0
     version: 3.1.0(react-hook-form@7.43.9)
+  '@react-spectrum/card':
+    specifier: 3.0.0-alpha.18
+    version: 3.0.0-alpha.18(@react-spectrum/provider@3.7.1)(react-dom@18.2.0)(react@18.2.0)
   '@remix-run/node':
     specifier: ^1.15.0
     version: 1.15.0
@@ -54,6 +57,9 @@ devDependencies:
   '@faker-js/faker':
     specifier: ^7.6.0
     version: 7.6.0
+  '@react-types/card':
+    specifier: 3.0.0-alpha.14
+    version: 3.0.0-alpha.14(react@18.2.0)
   '@remix-run/css-bundle':
     specifier: ^1.15.0
     version: 1.15.0(@remix-run/serve@1.15.0)(@types/node@18.15.3)(ts-node@10.9.1)
@@ -3655,7 +3661,6 @@ packages:
     dependencies:
       '@swc/helpers': 0.4.14
       react: 18.2.0
-    dev: false
 
   /@react-aria/switch@3.5.0(react@18.2.0):
     resolution: {integrity: sha512-nMrwT0McuQ7ki6rSDFIuf9qa9UjcA1XJQ9zDRD2CC10F48xpHHi12iZpS8GAEdG2jTNdCZ3qSO1HsIt63uEQoQ==}
@@ -3769,7 +3774,6 @@ packages:
       '@swc/helpers': 0.4.14
       clsx: 1.2.1
       react: 18.2.0
-    dev: false
 
   /@react-aria/virtualizer@3.8.0(react-dom@18.2.0)(react@18.2.0):
     resolution: {integrity: sha512-5IWHio22fYWzlvmnistAQceJRVNHxOwmpSicl5xKR/Bl5I3uG6O4mrp9iOL7faRovKUpcvM6ydIDMsqEiBwQiA==}
@@ -3957,6 +3961,38 @@ packages:
       '@swc/helpers': 0.4.14
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /@react-spectrum/card@3.0.0-alpha.18(@react-spectrum/provider@3.7.1)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-RLv/BagdY0EQdQXWYQkFtnyQ6okBPXiv+u+gDsrSDbBLMsnfEJkkmmT3D/GysQ3kIPxUynYIvxutTr5L/VkLbg==}
+    peerDependencies:
+      '@react-spectrum/provider': ^3.0.0
+      react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
+    dependencies:
+      '@react-aria/focus': 3.12.0(react@18.2.0)
+      '@react-aria/grid': 3.7.0(react-dom@18.2.0)(react@18.2.0)
+      '@react-aria/i18n': 3.7.1(react@18.2.0)
+      '@react-aria/interactions': 3.15.0(react@18.2.0)
+      '@react-aria/utils': 3.16.0(react@18.2.0)
+      '@react-aria/virtualizer': 3.8.0(react-dom@18.2.0)(react@18.2.0)
+      '@react-spectrum/checkbox': 3.7.1(@react-spectrum/provider@3.7.1)(react-dom@18.2.0)(react@18.2.0)
+      '@react-spectrum/divider': 3.5.1(react@18.2.0)
+      '@react-spectrum/layout': 3.5.1(@react-spectrum/provider@3.7.1)(react@18.2.0)
+      '@react-spectrum/progress': 3.5.0(@react-spectrum/provider@3.7.1)(react@18.2.0)
+      '@react-spectrum/provider': 3.7.1(react-dom@18.2.0)(react@18.2.0)
+      '@react-spectrum/utils': 3.9.1(react@18.2.0)
+      '@react-stately/collections': 3.7.0(react@18.2.0)
+      '@react-stately/grid': 3.6.0(react@18.2.0)
+      '@react-stately/list': 3.8.0(react@18.2.0)
+      '@react-stately/utils': 3.6.0(react@18.2.0)
+      '@react-stately/virtualizer': 3.5.1(react@18.2.0)
+      '@react-types/card': 3.0.0-alpha.14(react@18.2.0)
+      '@react-types/provider': 3.6.1(react@18.2.0)
+      '@react-types/shared': 3.18.0(react@18.2.0)
+      '@swc/helpers': 0.4.14
+      react: 18.2.0
+    transitivePeerDependencies:
+      - react-dom
     dev: false
 
   /@react-spectrum/checkbox@3.7.1(@react-spectrum/provider@3.7.1)(react-dom@18.2.0)(react@18.2.0):
@@ -5119,7 +5155,6 @@ packages:
     dependencies:
       '@swc/helpers': 0.4.14
       react: 18.2.0
-    dev: false
 
   /@react-stately/virtualizer@3.5.1(react@18.2.0):
     resolution: {integrity: sha512-TVszEl8+os5eAwoETAJ0ndz5cnYFQs52OIcWonKRYbNp5KvWAV+OA2HuIrB3SSC29ZRB2bDqpj4S2LY4wWJPCw==}
@@ -5130,7 +5165,6 @@ packages:
       '@react-types/shared': 3.18.0(react@18.2.0)
       '@swc/helpers': 0.4.14
       react: 18.2.0
-    dev: false
 
   /@react-types/actiongroup@3.4.1(react@18.2.0):
     resolution: {integrity: sha512-suexbvG4HOCzoAoAAVHB0JYcYoTzAmHJQSCigg5Rcaydypo5SWL8uc8wYS2OK0Q3YW7nFKBXqSnQCw8kQNpS2Q==}
@@ -5197,6 +5231,16 @@ packages:
       '@react-types/shared': 3.18.0(react@18.2.0)
       react: 18.2.0
     dev: false
+
+  /@react-types/card@3.0.0-alpha.14(react@18.2.0):
+    resolution: {integrity: sha512-8DAEuYJL0jM8gBrx3UX5yVVmaOygxvhcE+L0SAzL4VUVpafjKIwBmz0eCqroIihDwCyS98o8i5ccAF+CtNq1uA==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
+    dependencies:
+      '@react-stately/virtualizer': 3.5.1(react@18.2.0)
+      '@react-types/provider': 3.6.1(react@18.2.0)
+      '@react-types/shared': 3.18.0(react@18.2.0)
+      react: 18.2.0
 
   /@react-types/checkbox@3.4.3(react@18.2.0):
     resolution: {integrity: sha512-kn2f8mK88yvRrCfh8jYCDL2xpPhSApFWk9+qjWGsX/bnGGob7D5n71YYQ4cS58117YK2nrLc/AyQJXcZnJiA7Q==}
@@ -5383,7 +5427,6 @@ packages:
     dependencies:
       '@react-types/shared': 3.18.0(react@18.2.0)
       react: 18.2.0
-    dev: false
 
   /@react-types/radio@3.4.1(react@18.2.0):
     resolution: {integrity: sha512-8r7s+Zj0JoIpYgbuHjhE/eWUHKiptaFvYXMH986yKAg969VQlQiP9Dm4oWv2d+p26WbGK7oJDQJCt8NjASWl8g==}
@@ -5419,7 +5462,6 @@ packages:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
     dependencies:
       react: 18.2.0
-    dev: false
 
   /@react-types/slider@3.5.0(react@18.2.0):
     resolution: {integrity: sha512-ri0jGWt1x/+nWLLJmlRKaS0xyAjTE1UtsobEYotKkQjzG93WrsEZrb0tLmDnXyEfWi3NXyrReQcORveyv4EQ5g==}
@@ -5816,7 +5858,6 @@ packages:
     resolution: {integrity: sha512-4C7nX/dvpzB7za4Ql9K81xK3HPxCpHMgwTZVyf+9JQ6VUbn9jjZVN7/Nkdz/Ugzs2CSjqnL/UPXroiVBVHUWUw==}
     dependencies:
       tslib: 2.5.0
-    dev: false
 
   /@szmarczak/http-timer@4.0.6:
     resolution: {integrity: sha512-4BAffykYOgO+5nzBWYwE3W90sBgLJoUPRWWcL8wlyiM8IB8ipJz3UMJ9KXQd1RKQXpKp8Tutn80HZtWsu2u76w==}
@@ -7246,7 +7287,6 @@ packages:
   /clsx@1.2.1:
     resolution: {integrity: sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==}
     engines: {node: '>=6'}
-    dev: false
 
   /color-convert@1.9.3:
     resolution: {integrity: sha512-QfAUtd+vFdAtFQcC8CCyYt1fYWxSqAiK2cSD6zDB8N3cpsEBAvRxp9zOGg6G/SHHJYAT88/az/IuDGALsNVbGg==}
