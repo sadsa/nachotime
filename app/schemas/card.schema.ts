@@ -8,6 +8,6 @@ export const cardSchema = z.object({
   translation: z.string().min(1),
   playbackAudioUrl: z.string().min(1),
   workflowStatus: z.enum(["0", "1", "-1"]),
-  expressions: expressionSchema,
+  expressions: z.array(expressionSchema),
   createdDate: z.object({}).optional(),
 });

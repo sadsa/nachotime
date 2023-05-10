@@ -5,6 +5,7 @@ module.exports = {
     /^@adobe\/react-spectrum/,
     /^@react-spectrum/,
     /^@spectrum-icons/,
+    /^@swc\/helpers/,
   ],
   future: {
     v2_errorBoundary: true,

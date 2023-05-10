@@ -10,6 +10,9 @@ dependencies:
   '@react-spectrum/card':
     specifier: 3.0.0-alpha.18
     version: 3.0.0-alpha.18(@react-spectrum/provider@3.7.1)(react-dom@18.2.0)(react@18.2.0)
+  '@react-spectrum/tag':
+    specifier: 3.0.0-rc.0
+    version: 3.0.0-rc.0(@react-spectrum/provider@3.7.1)(react-dom@18.2.0)(react@18.2.0)
   '@remix-run/node':
     specifier: ^1.15.0
     version: 1.15.0
@@ -3718,6 +3721,27 @@ packages:
       react: 18.2.0
     dev: false
 
+  /@react-aria/tag@3.0.0-rc.0(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-4j9n44M2IKgZJX20Mh/wuzO4VkZIDPIxHSaXPuE3UgltPn+ycMlvKD1KDRv5KrVkmlozx6WVZvU7goVo7rBjWg==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
+    dependencies:
+      '@react-aria/gridlist': 3.3.0(react-dom@18.2.0)(react@18.2.0)
+      '@react-aria/i18n': 3.7.1(react@18.2.0)
+      '@react-aria/interactions': 3.15.0(react@18.2.0)
+      '@react-aria/label': 3.5.1(react@18.2.0)
+      '@react-aria/utils': 3.16.0(react@18.2.0)
+      '@react-stately/list': 3.8.0(react@18.2.0)
+      '@react-stately/tag': 3.0.0-rc.0(react@18.2.0)
+      '@react-types/button': 3.7.2(react@18.2.0)
+      '@react-types/shared': 3.18.0(react@18.2.0)
+      '@react-types/tag': 3.0.0-rc.0(react@18.2.0)
+      '@swc/helpers': 0.4.14
+      react: 18.2.0
+    transitivePeerDependencies:
+      - react-dom
+    dev: false
+
   /@react-aria/textfield@3.9.1(react@18.2.0):
     resolution: {integrity: sha512-IxJ6QupBD8yiEwF1etj4BWfwjNpc3Y00j+pzRIuo07bbkEOPl0jtKxW5YHG9un6nC9a5CKIHcILato1Q0Tsy0g==}
     peerDependencies:
@@ -4712,6 +4736,34 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     dev: false
 
+  /@react-spectrum/tag@3.0.0-rc.0(@react-spectrum/provider@3.7.1)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-kPzb5NdATMY3Pg4eaK3TyXxGitaGZJn2ATuTH+ywd0SGdHL/YZJBKkS8b4wz6ZJayLed6PWTgZtnUbYNtAzSwQ==}
+    peerDependencies:
+      '@react-spectrum/provider': ^3.0.0
+      react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
+    dependencies:
+      '@react-aria/focus': 3.12.0(react@18.2.0)
+      '@react-aria/i18n': 3.7.1(react@18.2.0)
+      '@react-aria/interactions': 3.15.0(react@18.2.0)
+      '@react-aria/tag': 3.0.0-rc.0(react-dom@18.2.0)(react@18.2.0)
+      '@react-aria/utils': 3.16.0(react@18.2.0)
+      '@react-spectrum/button': 3.12.1(@react-spectrum/provider@3.7.1)(react-dom@18.2.0)(react@18.2.0)
+      '@react-spectrum/form': 3.6.1(@react-spectrum/provider@3.7.1)(react@18.2.0)
+      '@react-spectrum/label': 3.12.0(@react-spectrum/provider@3.7.1)(react-dom@18.2.0)(react@18.2.0)
+      '@react-spectrum/provider': 3.7.1(react-dom@18.2.0)(react@18.2.0)
+      '@react-spectrum/text': 3.4.1(@react-spectrum/provider@3.7.1)(react@18.2.0)
+      '@react-spectrum/utils': 3.9.1(react@18.2.0)
+      '@react-stately/collections': 3.7.0(react@18.2.0)
+      '@react-stately/list': 3.8.0(react@18.2.0)
+      '@react-stately/tag': 3.0.0-rc.0(react@18.2.0)
+      '@react-types/shared': 3.18.0(react@18.2.0)
+      '@react-types/tag': 3.0.0-rc.0(react@18.2.0)
+      '@swc/helpers': 0.4.14
+      react: 18.2.0
+    transitivePeerDependencies:
+      - react-dom
+    dev: false
+
   /@react-spectrum/text@3.4.1(@react-spectrum/provider@3.7.1)(react@18.2.0):
     resolution: {integrity: sha512-5jG4w1JaGbmQZsuJkCYzvdBNYEJ0VSgE3M6SlFO/WGRBrZF0hFIA+VuxAggpTeXY/TMY8HN1m0+h51hMvie3fg==}
     peerDependencies:
@@ -5111,6 +5163,18 @@ packages:
       react: 18.2.0
     dev: false
 
+  /@react-stately/tag@3.0.0-rc.0(react@18.2.0):
+    resolution: {integrity: sha512-XQO79gAk/c1SECnxqqvFn2meG6Aa/lO1GUkpiplB9898I0uUwTvQHyOQb1eJEv+t9rPbjMa9AksArf5KDRhGTg==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
+    dependencies:
+      '@babel/runtime': 7.21.0
+      '@react-stately/list': 3.8.0(react@18.2.0)
+      '@react-types/tag': 3.0.0-rc.0(react@18.2.0)
+      '@swc/helpers': 0.4.14
+      react: 18.2.0
+    dev: false
+
   /@react-stately/toggle@3.5.1(react@18.2.0):
     resolution: {integrity: sha512-PF4ZaATpXWu7DkneGSZ2/PA6LJ1MrhKNiaENTZlbojXMRr5kK33wPzaDW7I8O25IUm0+rvQicv7A6QkEOxgOPg==}
     peerDependencies:
@@ -5503,6 +5567,15 @@ packages:
 
   /@react-types/tabs@3.2.1(react@18.2.0):
     resolution: {integrity: sha512-KgvhrYvISQUq540iuNc3bRvOCfLvaeqpB5VwDYR8amG1FVWHklCW8xx8Uz63SVkOvNtExYCrlw63M/OnjRUzOw==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
+    dependencies:
+      '@react-types/shared': 3.18.0(react@18.2.0)
+      react: 18.2.0
+    dev: false
+
+  /@react-types/tag@3.0.0-rc.0(react@18.2.0):
+    resolution: {integrity: sha512-9nJQpj7Xfd9SFel/TjGiCY0Zteh3MYc0QnQjD8Tq1pyoWGCwTJzeYPfJjkBeWjDSOcNjPK7kFqBhr/zpsW9IPQ==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
     dependencies:
